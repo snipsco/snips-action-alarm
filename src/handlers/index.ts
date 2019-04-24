@@ -1,5 +1,9 @@
 import { translation, logger } from '../utils'
-import { pokemonHandler } from './pokemon'
+import { setAlarmHandler } from './setAlarm'
+import { getAlarmHandler } from './getAlarm'
+import { cancelAlarmHandler } from './cancelAlarm'
+import { renameAlarmHandler } from './renameAlarm'
+import { rescheduleAlarmHandler } from './rescheduleAlarm'
 import { FlowContinuation, IntentMessage, FlowActionReturn } from 'hermes-javascript'
 
 export type Handler = (
@@ -29,5 +33,9 @@ const handlerWrapper = (handler: Handler): Handler => (
 
 // Add handlers here, and wrap them.
 export default {
-    pokemon: handlerWrapper(pokemonHandler)
+    setAlarm: handlerWrapper(setAlarmHandler),
+    getAlarm: handlerWrapper(getAlarmHandler),
+    cancelAlarm: handlerWrapper(cancelAlarmHandler),
+    renameAlarm: handlerWrapper(renameAlarmHandler),
+    rescheduleAlarm: handlerWrapper(rescheduleAlarmHandler)
 }

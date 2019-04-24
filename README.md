@@ -1,5 +1,6 @@
 # snips-action-alarm
-#### Snips action code for the Alarm app
+
+Snips action code for the Alarm app
 
 ## Setup
 
@@ -7,6 +8,10 @@
 # Install the dependencies, builds the action and creates the config.ini file.
 sh setup.sh
 ```
+
+Don't forget to edit the `config.ini` file.
+
+An assistant containing the intents listed below must be installed on your system. Deploy it following [these instructions](https://docs.snips.ai/articles/console/actions/deploy-your-assistant).
 
 ## Run
 
@@ -23,12 +28,12 @@ npm run dev
 # 1) Lint, transpile and test.
 npm start
 # 2) Run the action.
-node action-snips.js
+node action-alarm.js
 ```
 
 ## Debug
 
-In the `action-snips.js` file:
+In the `action-alarm.js` file:
 
 ```js
 // Uncomment this line to print everything

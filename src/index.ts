@@ -13,11 +13,30 @@ export default function ({
             try {
                 // Bootstrap config, locale, i18n…
                 await bootstrap(bootstrapOptions)
-
                 const dialog = hermes.dialog()
 
-                // This is a placeholder! Replace that by something valid!
-                dialog.flow('pokemon', handlers.pokemon)
+                dialog.flows([
+                    {
+                        intent: 'snips-assistant:SetAlarm',
+                        action: (msg, flow) => handlers.setAlarm(msg, flow, hermes)
+                    },
+                    {
+                        intent: 'snips-assistant:GetAlarm',
+                        action: (msg, flow) => handlers.getAlarm(msg, flow, hermes)
+                    },
+                    {
+                        intent: 'snips-assistant:RenameAlarm',
+                        action: (msg, flow) => handlers.renameAlarm(msg, flow, hermes)
+                    },
+                    {
+                        intent: 'snips-assistant:RescheduleAlarm',
+                        action: (msg, flow) => handlers.rescheduleAlarm(msg, flow, hermes)
+                    },
+                    {
+                        intent: 'snips-assistant:CancelAlarm',
+                        action: (msg, flow) => handlers.cancelAlarm(msg, flow, hermes)
+                    }
+                ])
                 resolve(done)
             } catch (error) {
                 // Output initialization errors to stderr and exit
