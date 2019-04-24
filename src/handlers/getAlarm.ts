@@ -1,10 +1,10 @@
-import { logger, translation, beautify, slot } from '../utils'
+import { logger, translation, beautify, slot, Database } from '../utils'
 import handlers, { Handler } from './index'
 import { Hermes } from 'hermes-javascript'
 import commonHandler, { KnownSlots } from './common'
 import { Alarm, AlarmInit } from '../utils/alarm'
 
-export const getAlarmHandler: Handler = async function (msg, flow, hermes: Hermes, database, knownSlots: KnownSlots = { depth: 2 }) {
+export const getAlarmHandler: Handler = async function (msg, flow, hermes: Hermes, database: Database, knownSlots: KnownSlots = { depth: 2 }) {
     logger.info('GetAlarm')
 
     const {
@@ -23,13 +23,13 @@ export const getAlarmHandler: Handler = async function (msg, flow, hermes: Herme
         throw new Error('intentNotRecognized')
     }
 
-    // Require slot: name, datetime/recurrence
+    // Required slot: name, datetime/recurrence
     if (!name && !(recurrence || date)) {
         flow.continue('snips-assistant:SetAlarm', (msg, flow) => {
             if (knownSlots.depth) {
                 knownSlots.depth -= 1
             }
-            return handlers.setAlarm(msg, flow, database, knownSlots)
+            return handlers.setAlarm(msg, flow, hermes, database, knownSlots)
         })
 
         return translation.randomTranslation('setAlarm.info.nameAndTime')

@@ -82,29 +82,37 @@ export const getDatetimeRange = (datetimeSnips: InstantTimeSlotValue<slotType.in
  */
 export const getScheduleString = (datetime: Date, recurrence: string | null): string => {
     logger.debug('getScheduleString', typeof datetime)
-    const mapper = new Map([
-        ['mondays', '* * Mon'],
-        ['tuesdays', '* * Tue'],
-        ['wednesdays', '* * Wed'],
-        ['thursdays', '* * Thu'],
-        ['fridays', '* * Fri'],
-        ['saturdays', '* * Sat'],
-        ['sundays', '* * Sun'],
-        ['weekly', `* * ${datetime.getDay()}`],
-        ['daily', '* * *'],
-        ['monthly', `${datetime.getDate()} * *`],
-        ['weekends', '* * Sat,Sun']
-    ])
+    const mapper = {
+        mondays: '* * Mon',
+        tuesdays: '* * Tue',
+        wednesdays: '* * Wed',
+        thursdays: '* * Thu',
+        fridays: '* * Fri',
+        saturdays: '* * Sat',
+        sundays: '* * Sun',
+        weekly: `* * ${datetime.getDay()}`,
+        daily: '* * *',
+        monthly: `${datetime.getDate()} * *`,
+        weekends: '* * Sat,Sun'
+    }
 
     let schedule = `${datetime.getSeconds()} ${datetime.getMinutes()} ${datetime.getHours()} `
 
     if (recurrence) {
-        schedule += mapper.get(recurrence)
+        for (let [key, value] of Object.entries(mapper)) {
+            if (recurrence.toLowerCase().includes(key)) {
+                schedule += value
+            }
+        }
     } else {
         schedule += `${datetime.getDate()} ${datetime.getMonth()+1} ${datetime.getDay()}`
     }
+
+    logger.debug(schedule)
+
     if (!cron.validate(schedule)) {
-        throw 'invalideCronScheduleExpression'
+        throw 'invalidCronScheduleExpression'
     }
+
     return schedule
 }

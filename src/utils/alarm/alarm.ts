@@ -29,10 +29,10 @@ export type AlarmString = {
 }
 
 /**
- * Reminder
+ * Alarm
  * 
- * @exception {pastReminderDatetime}
- * @exception {noTaskReminderAlarmFound} 
+ * @exception {pastAlarmDatetime}
+ * @exception {noTaskAlarmBeepFound} 
  */
 export class Alarm {
     id: string = ''
@@ -44,8 +44,8 @@ export class Alarm {
     rawRecurrence: string | null = null
     nextExecution: Date = new Date() 
 
-    taskReminder: ScheduledTask | null = null
-    taskReminderAlarm: ScheduledTask | null = null
+    taskAlarm: ScheduledTask | null = null
+    taskAlarmBeep: ScheduledTask | null = null
     
     constructor(obj: AlarmInit | string, hermes: Hermes) {
         if (typeof obj === 'string') {
@@ -91,10 +91,11 @@ export class Alarm {
         this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
 
         if (this.nextExecution.getTime() < Date.now() + 15000) {
-            throw new Error('pastReminderDatetime')
+            throw new Error('pastAlarmDatetime')
         }
 
         this.__make_alive(hermes)
+        this.save()
     }
 
     /**
@@ -103,9 +104,9 @@ export class Alarm {
      * @param hermes 
      */
     __make_alive(hermes: Hermes) {
-        const dialogId: string = `snips-assistant:reminder:${this.id}`
+        const dialogId: string = `snips-assistant:alarm:${this.id}`
 
-        const onReminderArrive = () => {
+        const onAlarmArrive = () => {
             const i18n = i18nFactory.get()
             const message = i18n('alarm.info.itsTimeTo', {
                 name: this.name
@@ -141,18 +142,18 @@ export class Alarm {
             //flow.notRecognized()
         })
 
-        this.taskReminderAlarm = cron.schedule(ALARM_CRON_EXP, onReminderArrive, { scheduled: false })
-        this.taskReminder = cron.schedule(this.schedule, () => {
-            if (this.taskReminderAlarm) {
-                this.taskReminderAlarm.start()
+        this.taskAlarmBeep = cron.schedule(ALARM_CRON_EXP, onAlarmArrive, { scheduled: false })
+        this.taskAlarm = cron.schedule(this.schedule, () => {
+            if (this.taskAlarmBeep) {
+                this.taskAlarmBeep.start()
             } else {
-                throw new Error('noTaskReminderAlarmFound')
+                throw new Error('noTaskAlarmBeepFound')
             }
         })
     }
 
     /**
-     * Elicit reminder info to string
+     * Elicit alarm info to string
      */
     toString() {
         return JSON.stringify({
@@ -196,14 +197,14 @@ export class Alarm {
      * Destroy all the task cron, release memory
      */
     destroy() {
-        if (this.taskReminder) {
-            this.taskReminder.stop()
-            this.taskReminder.destroy()
+        if (this.taskAlarm) {
+            this.taskAlarm.stop()
+            this.taskAlarm.destroy()
         }
 
-        if (this.taskReminderAlarm) {
-            this.taskReminderAlarm.stop()
-            this.taskReminderAlarm.destroy()
+        if (this.taskAlarmBeep) {
+            this.taskAlarmBeep.stop()
+            this.taskAlarmBeep.destroy()
         }
     }
 
@@ -215,29 +216,29 @@ export class Alarm {
             this.setExpired()
         }
 
-        if (this.taskReminderAlarm) {
-            this.taskReminderAlarm.stop()
+        if (this.taskAlarmBeep) {
+            this.taskAlarmBeep.stop()
         } else {
-            throw new Error('noTaskReminderAlarmFound')
+            throw new Error('noTaskAlarmBeepFound')
         }
         
         this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
     }
 
     /**
-     * Deactivate reminder, keep the copy saved
+     * Desactivate alarm, keep the copy saved
      */
     setExpired() {
-        if (this.taskReminder) {
-            this.taskReminder.stop()
-            this.taskReminder.destroy()
-            this.taskReminder = null
+        if (this.taskAlarm) {
+            this.taskAlarm.stop()
+            this.taskAlarm.destroy()
+            this.taskAlarm = null
         }
 
-        if (this.taskReminderAlarm) {
-            this.taskReminderAlarm.stop()
-            this.taskReminderAlarm.destroy()
-            this.taskReminderAlarm = null
+        if (this.taskAlarmBeep) {
+            this.taskAlarmBeep.stop()
+            this.taskAlarmBeep.destroy()
+            this.taskAlarmBeep = null
         }
 
         this.isExpired = true

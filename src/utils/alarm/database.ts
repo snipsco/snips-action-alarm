@@ -10,7 +10,7 @@ function isDateInRange(datetimeRange: DatetimeRange, datetimeObj: Date) {
 }
 
 export class Database {
-    // Save all the reminders
+    // Save all the alarms
     __alarms: Alarm[] = []
 
     // Save the hermes client
@@ -54,11 +54,11 @@ export class Database {
      * @param isExpired 
      */
     get(name?: string, datetimeRange?: DatetimeRange, recurrence?: string, isExpired?: boolean) {
-        return this.__alarms.filter( reminder =>
-            (!name || name === reminder.name) &&
-            (!datetimeRange || isDateInRange(datetimeRange, reminder.rawDatetime)) &&
-            (!recurrence || recurrence === reminder.rawRecurrence) &&
-            (isExpired === reminder.isExpired)
+        return this.__alarms.filter(alarm =>
+            (!name || name === alarm.name) &&
+            (!datetimeRange || isDateInRange(datetimeRange, alarm.rawDatetime)) &&
+            (!recurrence || recurrence === alarm.rawRecurrence) &&
+            (isExpired === alarm.isExpired)
         ).sort( (a, b) => {
             return (a.rawDatetime.getTime() - b.rawDatetime.getTime())
         })
@@ -72,7 +72,7 @@ export class Database {
     getById(id: string): Alarm {
         const res = this.__alarms.filter(alarm => alarm.id === id)
         if (res.length === 0) {
-            throw new Error('canNotFindReminder')
+            throw new Error('canNotFindAlarm')
         }
         return res[0]
     }
@@ -82,23 +82,23 @@ export class Database {
      * 
      * @param id 
      */
-    deleteById(id: string) {
-        const reminder = this.getById(id)
-        if (reminder) {
-            reminder.delete()
-            this.__alarms.splice(this.__alarms.indexOf(reminder), 1)
+    deleteById(id: string): boolean {
+        const alarm = this.getById(id)
+        if (alarm) {
+            alarm.delete()
+            this.__alarms.splice(this.__alarms.indexOf(alarm), 1)
             return true
-        } else {
-            return false
         }
+
+        return false
     }
 
     /**
      * Delete all alarms
      */
     deleteAll() {
-        this.__alarms.forEach(reminder => {
-            reminder.delete()
+        this.__alarms.forEach(alarm => {
+            alarm.delete()
         })
         this.__alarms.splice(0)
     }
