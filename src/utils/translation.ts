@@ -1,7 +1,6 @@
 import { i18nFactory } from '../factories/i18nFactory'
 import { Alarm } from './alarm'
 import { beautify } from './beautify'
-import { logger } from './logger';
 
 type AlarmsReport = {
     head: string,
@@ -110,11 +109,17 @@ function getAll(alarms: Alarm[]): string {
     let tts: string = ''
 
     for (let i = 0; i < alarms.length; i++) {
-        logger.debug(alarms[i].date)
-        tts += i18n('getAlarms.info.alarm_SetFor_', {
-            name: alarms[i].name,
-            time: beautify.date(alarms[i].date)
-        })
+        if (alarms[i].name) {
+            tts += i18n('getAlarms.info.alarm_SetFor_Name', {
+                name: alarms[i].name,
+                time: beautify.datetime(alarms[i].date)
+            })
+        } else {
+            tts += i18n('getAlarms.info.alarm_SetFor_', {
+                time: beautify.datetime(alarms[i].date)
+            })
+        }
+        
         tts += ' '
     }
 
@@ -175,9 +180,15 @@ export const translation = {
     },
 
     setAlarmToSpeech(alarm: Alarm): string {
-        return translation.randomTranslation('setAlarm.info.alarm_SetFor_', {
-            name,
-            time: beautify.date(alarm.nextExecution)
-        })
+        if (alarm.name) {
+            return translation.randomTranslation('setAlarm.info.alarm_SetFor_Name', {
+                name: alarm.name,
+                time: beautify.datetime(alarm.nextExecution)
+            })
+        } else {
+            return translation.randomTranslation('setAlarm.info.alarm_SetFor', {
+                time: beautify.datetime(alarm.nextExecution)
+            })
+        }
     }
 }

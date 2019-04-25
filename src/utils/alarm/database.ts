@@ -46,7 +46,7 @@ export class Database {
      * Get alarms
      * 
      * @param name 
-     * @param datetime 
+     * @param range 
      * @param recurrence 
      * @param isExpired 
      */
