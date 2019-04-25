@@ -1,6 +1,7 @@
 import { i18nFactory } from '../factories/i18nFactory'
 import { Alarm } from './alarm'
 import { beautify } from './beautify'
+import { logger } from './logger';
 
 type AlarmsReport = {
     head: string,
@@ -13,7 +14,7 @@ function getHead(alarms: Alarm[]): string {
     const i18n = i18nFactory.get()
     const alarm = alarms[0]
 
-    // "I have found <number> alarm(s) named <name>"
+    // "I have found <number> alarm(s) named <name>."
     if (alarm.name && !alarm.date && !alarm.recurrence) {
         return i18n('getAlarms.info.found_AlarmsNamed_', {
             number: alarms.length,
@@ -22,7 +23,7 @@ function getHead(alarms: Alarm[]): string {
         })
     }
 
-    // "I have found <number> alarm(s) set for <time>"
+    // "I have found <number> alarm(s) set for <time>."
     if (!alarm.name && alarm.date && !alarm.recurrence) {
         return i18n('getAlarms.info.found_AlarmsSetFor_', {
             number: alarms.length,
@@ -31,16 +32,16 @@ function getHead(alarms: Alarm[]): string {
         })
     }
 
-    // "I have found <number> alarm(s) set for every <recurrence>"
+    // "I have found <number> alarm(s) set for every <recurrence>."
     if (!alarm.name && !alarm.date && alarm.recurrence) {
         return i18n('getAlarms.info.found_AlarmsSetForEvery_', {
             number: alarms.length,
-            odd: alarms.length > 1 ? 's' : '',
-            recurrence: getRecurrenceHuman(alarm.recurrence)
+            odd: alarms.length > 1 ? 's' : ''
+            //recurrence: getRecurrenceHuman(alarm.recurrence)
         })
     }
 
-    // "I have found <number> alarm(s) named <name> and set for <time>"
+    // "I have found <number> alarm(s) named <name> and set for <time>."
     if (alarm.name && alarm.date && !alarm.recurrence) {
         return i18n('getAlarms.info.found_AlarmsNamed_AndSetFor_', {
             number: alarms.length,
@@ -50,17 +51,17 @@ function getHead(alarms: Alarm[]): string {
         })
     }
 
-    // "I have found <number> alarm(s) named <name> and set for <recurrence>"
+    // "I have found <number> alarm(s) named <name> and set for <recurrence>."
     if (alarm.name && alarm.date && alarm.recurrence) {
         return i18n('getAlarms.info.found_AlarmsNamed_AndSetForEvery_', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
-            name: alarm.name,
-            recurence: getRecurrenceHuman(alarm.recurrence)
+            name: alarm.name
+            //recurence: getRecurrenceHuman(alarm.recurrence)
         })
     }
 
-    // "I have found <number> alarm(s)"
+    // "I have found <number> alarm(s)."
     if (!alarm.name && !alarm.date && !alarm.recurrence) {
         return i18n('getAlarms.info.found_Alarms', {
             number: alarms.length,
@@ -71,20 +72,20 @@ function getHead(alarms: Alarm[]): string {
     return ''
 }
 
-// "The most recent one is: <name> set for <time>"
+// "The most recent one is: <name> set for <time>."
 function getRecent(alarms: Alarm[]): string {
     const i18n = i18nFactory.get()
 
     let messageHead = i18n('getAlarms.info.theMostRecentIs')
     let messageContent = i18n('getAlarms.info.alarm_SetFor_', {
         name: alarms[0].name,
-        time: getTimeHuman(alarms[0].date, null, grain)
+        time: beautify.date(alarms[0].date)
     })
 
     return alarms.length === 1 ? messageContent : messageHead + messageContent
 }
 
-// "The remaining alarm(s) are: <name> set for <time>"
+// "The remaining alarm(s) are: <name> set for <time>."
 function getRemaining(alarms: Alarm[]): string {
     const i18n = i18nFactory.get()
     let message = ''
@@ -96,26 +97,28 @@ function getRemaining(alarms: Alarm[]): string {
     for (let i = 1; i < alarms.length; i++) {
         message += i18n('getAlarms.info.alarm_SetFor_', {
             name: alarms[i].name,
-            time: getTimeHuman(alarms[i].date, null, grain)
+            time: beautify.date(alarms[i].date)
         })
     }
 
     return alarms.length > 1 ? message : ''
 }
 
-// "<name> set for <time> "
-function getDetail(alarms: Alarm[]): string {
+// "<name> set for <time>."
+function getAll(alarms: Alarm[]): string {
     const i18n = i18nFactory.get()
-    let message = ''
+    let tts: string = ''
 
     for (let i = 0; i < alarms.length; i++) {
-        message += i18n('getAlarms.info.alarm_SetFor_', {
+        logger.debug(alarms[i].date)
+        tts += i18n('getAlarms.info.alarm_SetFor_', {
             name: alarms[i].name,
-            time: getTimeHuman(alarms[i].date, null, grain)
+            time: beautify.date(alarms[i].date)
         })
+        tts += ' '
     }
 
-    return message
+    return tts
 }
 
 function buildAlarmsReport(alarms: Alarm[]): AlarmsReport {
@@ -123,7 +126,7 @@ function buildAlarmsReport(alarms: Alarm[]): AlarmsReport {
         head: getHead(alarms),
         recent: getRecent(alarms),
         remaining: getRemaining(alarms),
-        all: getDetail(alarms)
+        all: getAll(alarms)
     }
 }
 
@@ -145,7 +148,7 @@ export const translation = {
     },
 
     // Takes an array from the i18n and returns a random item.
-    randomTranslation (key: string | string[], opts: {[key: string]: any} = {}): string {
+    randomTranslation(key: string | string[], opts: {[key: string]: any} = {}): string {
         const i18n = i18nFactory.get()
         const possibleValues = i18n(key, { returnObjects: true, ...opts })
 
@@ -162,18 +165,17 @@ export const translation = {
         let tts: string = ''
 
         if (alarms.length === 0) {
-            tts += i18n('getReminders.info.noAlarmFound')
+            tts += i18n('getAlarms.info.noAlarmFound')
         } else {
-            tts += buildAlarmsReport(alarms).all
+            const alarmsReport = buildAlarmsReport(alarms)
+            tts += alarmsReport.head + ' ' + alarmsReport.all
         }
 
         return tts
     },
 
     setAlarmToSpeech(alarm: Alarm): string {
-        const { randomTranslation } = exports.default
-
-        return randomTranslation('setAlarm.info.alarm_SetFor_', {
+        return translation.randomTranslation('setAlarm.info.alarm_SetFor_', {
             name,
             time: beautify.date(alarm.nextExecution)
         })

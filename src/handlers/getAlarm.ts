@@ -1,4 +1,4 @@
-import { logger, translation, message, Database, getDatetimeRange, DatetimeRange } from '../utils'
+import { logger, translation, message, Database, getDateRange, DateRange } from '../utils'
 import { Handler } from './index'
 import { Hermes, NluSlot, slotType, grain } from 'hermes-javascript'
 import commonHandler, { KnownSlots } from './common'
@@ -14,7 +14,7 @@ export const getAlarmHandler: Handler = async function (msg, flow, hermes: Herme
         recurrence
     } = await commonHandler(msg, knownSlots)
 
-    let date: DatetimeRange | undefined
+    let dateRange: DateRange | undefined
 
     const dateSlot: NluSlot<slotType.instantTime | slotType.timeInterval> | null = message.getSlotsByName(msg, 'datetime', {
         onlyMostConfident: true,
@@ -22,19 +22,14 @@ export const getAlarmHandler: Handler = async function (msg, flow, hermes: Herme
     })
 
     if (dateSlot) {
-        if (dateSlot.value.kind === 'TimeInterval') {
-            date = getDatetimeRange({
-                kind: slotType.instantTime,
-                value: dateSlot.value.from,
-                grain: grain.minute,
-                precision: 'Exact'
-            })
-        } else if (dateSlot.value.kind === 'InstantTime') {
-            date = getDatetimeRange(dateSlot.value)
+        if (dateSlot.value.kind === slotType.timeInterval) {
+            dateRange = { min: new Date(dateSlot.value.from), max: new Date(dateSlot.value.to) }
+        } else if (dateSlot.value.kind === slotType.instantTime) {
+            dateRange = getDateRange(new Date(dateSlot.value.value), dateSlot.value.grain)
         }
     }
 
-    const alarms = database.get(name, date, recurrence)
+    const alarms = database.get(name, dateRange, recurrence)
 
     flow.end()
     return translation.getAlarmsToSpeech(alarms)

@@ -7,10 +7,10 @@ import {
 } from '../constants'
 
 export type KnownSlots = {
-    depth: number,
-    alarm_name?: string
-    recurrence?: string
+    depth: number
+    name?: string
     date?: Date
+    recurrence?: string
 }
 
 export default async function (msg: IntentMessage, knownSlots: KnownSlots) {
@@ -25,7 +25,7 @@ export default async function (msg: IntentMessage, knownSlots: KnownSlots) {
 
     let name: string | undefined, recurrence: string | undefined, date: Date | undefined
 
-    if (!('alarm_name' in knownSlots)) {
+    if (!('name' in knownSlots)) {
         const nameSlot: NluSlot<slotType.custom> | null = message.getSlotsByName(msg, 'alarm_name', {
             onlyMostConfident: true,
             threshold: SLOT_CONFIDENCE_THRESHOLD
@@ -35,7 +35,7 @@ export default async function (msg: IntentMessage, knownSlots: KnownSlots) {
             name = nameSlot.value.value
         }
     } else {
-        name = knownSlots.alarm_name
+        name = knownSlots.name
     }
 
     if (!('recurrence' in knownSlots)) {

@@ -2,7 +2,6 @@ import { translation, logger } from '../utils'
 import { setAlarmHandler } from './setAlarm'
 import { getAlarmHandler } from './getAlarm'
 import { cancelAlarmHandler } from './cancelAlarm'
-import { renameAlarmHandler } from './renameAlarm'
 import { rescheduleAlarmHandler } from './rescheduleAlarm'
 import { FlowContinuation, IntentMessage, FlowActionReturn } from 'hermes-javascript'
 
@@ -36,6 +35,5 @@ export default {
     setAlarm: handlerWrapper(setAlarmHandler),
     getAlarm: handlerWrapper(getAlarmHandler),
     cancelAlarm: handlerWrapper(cancelAlarmHandler),
-    renameAlarm: handlerWrapper(renameAlarmHandler),
     rescheduleAlarm: handlerWrapper(rescheduleAlarmHandler)
 }

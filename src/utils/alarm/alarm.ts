@@ -9,17 +9,17 @@ import { i18nFactory } from '../../factories'
 import { ALARM_CRON_EXP, DIR_DB } from '../../constants'
 
 export type AlarmInit = {
-    name?: string
-    date?: Date
+    date: Date
     recurrence?: string
+    name?: string
 }
 
 export type AlarmString = {
     id: string
     name: string
     schedule: string
-    rawDatetime: string
-    rawRecurrence?: string
+    date: string
+    recurrence?: string
     isExpired: boolean
 }
 
@@ -31,10 +31,10 @@ export type AlarmString = {
  */
 export class Alarm {
     id: string = ''
-    name: string | null = null
+
     date: Date = new Date()
     recurrence: string | null = null
-
+    name: string | null = null
     schedule: string = ''
     isExpired: boolean = false
     nextExecution: Date = new Date() 
@@ -46,32 +46,26 @@ export class Alarm {
             const loadData: AlarmString = JSON.parse(obj)
         
             this.id = loadData.id
+            this.date = new Date(loadData.date)
+            this.recurrence = loadData.recurrence || null
             this.name = loadData.name
-
-            this.date = new Date(loadData.rawDatetime)
-            this.recurrence = loadData.rawRecurrence || null
-
             this.schedule = loadData.schedule
             this.isExpired = loadData.isExpired
-
             this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
 
             if (this.nextExecution.getTime() < Date.now()) {
                 this.isExpired = true
             }
-
             if (!this.isExpired) {
                 this.makeAlive(hermes)
             }
         } else if (typeof obj === 'object') {
             this.id = timestamp('YYYYMMDD-HHmmss-ms')
-            this.name = obj.name || null
-            this.date = obj.date || new Date()
+            this.date = obj.date
             this.recurrence = obj.recurrence || null
-    
+            this.name = obj.name || null
             this.schedule = getScheduleString(this.date, this.recurrence)
             this.isExpired = false
-    
             this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
     
             if (this.nextExecution.getTime() < Date.now() + 15000) {

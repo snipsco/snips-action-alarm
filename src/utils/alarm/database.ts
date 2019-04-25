@@ -1,12 +1,12 @@
 import { Alarm, AlarmInit } from './alarm'
 import { DIR_DB } from '../../constants'
-import { DatetimeRange, logger } from '../../utils'
+import { DateRange, logger } from '../../utils'
 import fs from 'fs'
 import path from 'path'
 import { Hermes } from 'hermes-javascript'
 
-function isDateInRange(datetimeRange: DatetimeRange, datetimeObj: Date) {
-    return datetimeObj.getTime() >= datetimeRange.min && datetimeObj.getTime() < datetimeRange.max
+function isDateInRange(date: Date, dateRange: DateRange) {
+    return date >= dateRange.min && date < dateRange.max
 }
 
 export class Database {
@@ -50,12 +50,12 @@ export class Database {
      * @param recurrence 
      * @param isExpired 
      */
-    get(name?: string, datetimeRange?: DatetimeRange, recurrence?: string, isExpired?: boolean) {
+    get(name?: string, range?: DateRange, recurrence?: string, isExpired: boolean = false) {
         return this.alarms.filter(alarm =>
-            (!name || name === alarm.name) &&
-            (!datetimeRange || isDateInRange(datetimeRange, alarm.date)) &&
-            (!recurrence || recurrence === alarm.recurrence) &&
-            (isExpired === alarm.isExpired)
+            (!name || alarm.name === name) &&
+            (!range || isDateInRange(alarm.date, range)) &&
+            (!recurrence || alarm.recurrence === recurrence) &&
+            (alarm.isExpired === isExpired)
         ).sort((a, b) => {
             return (a.date.getTime() - b.date.getTime())
         })

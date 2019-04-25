@@ -28,10 +28,6 @@ export default function ({
                         action: (msg, flow) => handlers.getAlarm(msg, flow, hermes, database)
                     },
                     {
-                        intent: 'snips-assistant:RenameAlarm',
-                        action: (msg, flow) => handlers.renameAlarm(msg, flow, hermes, database)
-                    },
-                    {
                         intent: 'snips-assistant:RescheduleAlarm',
                         action: (msg, flow) => handlers.rescheduleAlarm(msg, flow, hermes, database)
                     },

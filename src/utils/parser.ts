@@ -1,31 +1,29 @@
 import cron from 'node-cron'
-import { InstantTimeSlotValue, slotType } from 'hermes-javascript'
-import { logger } from './logger';
+import { InstantTimeSlotValue, slotType, grain } from 'hermes-javascript'
+import { logger } from './logger'
 
-export type DatetimeRange = {
-    min: number
-    max: number
+export type DateRange = {
+    min: Date
+    max: Date
 }
 
-export const getDatetimeRange = (dateSlot: InstantTimeSlotValue<slotType.instantTime>): DatetimeRange => {
-    const datetime = new Date(dateSlot.value)
-    const min = datetime.getTime()
-    switch (dateSlot.grain) {
-        case 'Minute':
-            return {min, max: min + 1000 * 60}
-        case 'Hour':
-            return {min, max: min + 1000 * 60 * 60}
-        case 'Day':
-            return {min, max: min + 1000 * 60 * 60 * 24}
-        case 'Week':
-            return {min, max: min + 1000 * 60 * 60 * 24 * 7}
-        case 'Month':
-            return {min, max: min + 1000 * 60 * 60 * 24 * 30}
-        case 'Year':
-            return {min, max: min + 1000 * 60 * 60 * 24 * 365}
+export const getDateRange = (date: Date, grainValue: string): DateRange => {
+    switch (grainValue) {
+        case grain.minute:
+            return { min: date, max: new Date(date.getTime() + 1000 * 60) }
+        case grain.hour:
+            return { min: date, max: new Date(date.getTime() + 1000 * 60 * 60) }
+        case grain.day:
+            return { min: date, max: new Date(date.getTime() + 1000 * 60 * 60 * 24) }
+        case grain.week:
+            return { min: date, max: new Date(date.getTime() + 1000 * 60 * 60 * 24 * 7) }
+        case grain.month:
+            return { min: date, max: new Date(date.getTime() + 1000 * 60 * 60 * 24 * 30) }
+        case grain.year:
+            return { min: date, max: new Date(date.getTime() + 1000 * 60 * 60 * 24 * 365) }
         default:
-            // Not sure which will be this case
-            return {min, max: min + 1000 * 60}
+            // Not sure which will be this case, Second? Quarter?
+            return { min: date, max: new Date(date.getTime() + 1000 * 60) }
     }
 }
 
