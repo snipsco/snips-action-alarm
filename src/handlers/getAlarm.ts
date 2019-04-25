@@ -1,51 +1,41 @@
-import { logger, translation, beautify, slot, Database } from '../utils'
-import handlers, { Handler } from './index'
-import { Hermes } from 'hermes-javascript'
+import { logger, translation, message, Database, getDatetimeRange, DatetimeRange } from '../utils'
+import { Handler } from './index'
+import { Hermes, NluSlot, slotType, grain } from 'hermes-javascript'
 import commonHandler, { KnownSlots } from './common'
-import { Alarm, AlarmInit } from '../utils/alarm'
+import {
+    SLOT_CONFIDENCE_THRESHOLD
+} from '../constants'
 
 export const getAlarmHandler: Handler = async function (msg, flow, hermes: Hermes, database: Database, knownSlots: KnownSlots = { depth: 2 }) {
     logger.info('GetAlarm')
 
     const {
         name,
-        recurrence,
-        date
+        recurrence
     } = await commonHandler(msg, knownSlots)
 
-    // Required slot: name
-    if ((!name || slot.missing(name)) && (recurrence || date)) {
-        throw new Error('intentNotRecognized')
-    }
+    let date: DatetimeRange | undefined
 
-    // Required slot: datetime or recurrence
-    if (name && !(recurrence || date)) {
-        throw new Error('intentNotRecognized')
-    }
-
-    // Required slot: name, datetime/recurrence
-    if (!name && !(recurrence || date)) {
-        flow.continue('snips-assistant:SetAlarm', (msg, flow) => {
-            if (knownSlots.depth) {
-                knownSlots.depth -= 1
-            }
-            return handlers.setAlarm(msg, flow, hermes, database, knownSlots)
-        })
-
-        return translation.randomTranslation('setAlarm.info.nameAndTime')
-    }
-
-    const alarmInitObj: AlarmInit = {
-        name: name || '',
-        datetime: date || undefined,
-        recurrence: recurrence || undefined 
-    }
-    
-    const alarm: Alarm = database.add(alarmInitObj)
-    
-    flow.end()
-    return translation.randomTranslation('setAlarm.info.alarm_SetFor_', {
-        name: alarm.name,
-        time: beautify.datetime(alarm.nextExecution)
+    const dateSlot: NluSlot<slotType.instantTime | slotType.timeInterval> | null = message.getSlotsByName(msg, 'datetime', {
+        onlyMostConfident: true,
+        threshold: SLOT_CONFIDENCE_THRESHOLD
     })
+
+    if (dateSlot) {
+        if (dateSlot.value.kind === 'TimeInterval') {
+            date = getDatetimeRange({
+                kind: slotType.instantTime,
+                value: dateSlot.value.from,
+                grain: grain.minute,
+                precision: 'Exact'
+            })
+        } else if (dateSlot.value.kind === 'InstantTime') {
+            date = getDatetimeRange(dateSlot.value)
+        }
+    }
+
+    const alarms = database.get(name, date, recurrence)
+
+    flow.end()
+    return translation.getAlarmsToSpeech(alarms)
 }

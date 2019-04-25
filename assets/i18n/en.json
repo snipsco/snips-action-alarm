@@ -1,6 +1,6 @@
 {
     "error": {
-        "mqtt": "Sorry, there was a communication error with the Snips platform",
+        "mqtt": "Sorry, there was a communication error with the Snips platform.",
         "config": "Sorry, there was an error with your config file.",
         "locale": "Sorry, there was an error with your language settings.",
         "intentNotRecognized": "Sorry, I did not understand your request.",
@@ -23,8 +23,29 @@
         },
         "info": {
             "alarm_SetFor_": [
-                "Okay, alarm: {{ name }} is set for {{ time }}"
+                "Okay, alarm: {{ name }} is set for {{ time }}."
             ]
+        }
+    },
+    "getAlarms": {
+        "ask": {
+            "ifListRestAlarms": "Would you like to list all the remaining alarms?"
+        },
+        "info": {
+            "foundAlarms": "I have found {{ number }} alarm{{odd}}.",
+            "foundComingAlarms": "I have found {{ number }} coming alarm{{odd}}.",
+            "alarmSetFor": "Alarm: {{ name }}, set for {{ datetime }} {{ recurrence }}.",
+            "noAlarmFound": "It seems like you have no alarm set for the moment.",
+            "noSuchAlarmsFound": "It seems like you have no such alarm set for the moment.",
+            "found_Alarms": "I have found {{ number }} alarm{{odd}}.",
+            "found_AlarmsNamed_": "I have found {{ number }} alarm{{odd}} named {{ name }}.",
+            "found_AlarmsSetFor_": "I have found {{ number }} alarm{{odd}} set for {{ time }}.",
+            "found_AlarmsSetForEvery_": "I have found {{ number }} alarm{{odd}} set for each {{ recurrence }}.",
+            "found_AlarmsNamed_AndSetFor_": "I have found {{ number }} alarm{{odd}} named {{ name }} set for {{ time }}.",
+            "found_AlarmsNamed_AndSetForEvery_": "I have found {{ number }} alarm{{odd}} named {{ name }} set for each {{ recurrence }}.",
+            "theMostRecentIs": "The most recent one is: ",
+            "theRemainingAlarmsAre": "The remaining alarm{{odd}} {{ be }}: ",
+            "alarm_SetFor_": "{{ name }}, set for {{ time }}."
         }
     },
     "moment": {

@@ -7,10 +7,10 @@ export type DatetimeRange = {
     max: number
 }
 
-export const getDatetimeRange = (datetimeSnips: InstantTimeSlotValue<slotType.instantTime>): DatetimeRange => {
-    const datetime = new Date(datetimeSnips.value)
+export const getDatetimeRange = (dateSlot: InstantTimeSlotValue<slotType.instantTime>): DatetimeRange => {
+    const datetime = new Date(dateSlot.value)
     const min = datetime.getTime()
-    switch (datetimeSnips.grain) {
+    switch (dateSlot.grain) {
         case 'Minute':
             return {min, max: min + 1000 * 60}
         case 'Hour':
@@ -32,11 +32,11 @@ export const getDatetimeRange = (datetimeSnips: InstantTimeSlotValue<slotType.in
 /**
  * Convert a incompleted datetime to a exact time, filling the unclear parts by current time sub-segments
  */
- export const getCompletedDatetime = (datetimeSnips: InstantTimeSlotValue<slotType.instantTime>): Date => {
+ export const getCompletedDatetime = (dateSlot: InstantTimeSlotValue<slotType.instantTime>): Date => {
      const datetimeNow = new Date(Date.now())
-     let completedDatetime = new Date(datetimeSnips.value)
+     let completedDatetime = new Date(dateSlot.value)
 
-     switch (datetimeSnips.grain) {
+     switch (dateSlot.grain) {
          case 'Minute':// base: exact at YYYY-MM-DD HH-MM
              return completedDatetime
          // case 'Hour':// base: the next hour at HH:00

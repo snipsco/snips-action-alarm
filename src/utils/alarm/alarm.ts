@@ -3,19 +3,14 @@ import path from 'path'
 import timestamp from 'time-stamp'
 import cron, { ScheduledTask } from 'node-cron'
 import { getScheduleString, logger } from '../../utils'
-import { 
-    InstantTimeSlotValue, 
-    Hermes, 
-    slotType, 
-    Dialog
-} from 'hermes-javascript'
+import { InstantTimeSlotValue, Hermes, slotType, Dialog } from 'hermes-javascript'
 import { parseExpression } from 'cron-parser'
 import { i18nFactory } from '../../factories'
 import { ALARM_CRON_EXP, DIR_DB } from '../../constants'
 
 export type AlarmInit = {
-    name: string
-    datetime?: Date
+    name?: string
+    date?: Date
     recurrence?: string
 }
 
@@ -36,66 +31,56 @@ export type AlarmString = {
  */
 export class Alarm {
     id: string = ''
-    name: string = ''
+    name: string | null = null
+    date: Date = new Date()
+    recurrence: string | null = null
+
     schedule: string = ''
     isExpired: boolean = false
-
-    rawDatetime: Date = new Date()
-    rawRecurrence: string | null = null
     nextExecution: Date = new Date() 
-
     taskAlarm: ScheduledTask | null = null
     taskAlarmBeep: ScheduledTask | null = null
     
     constructor(obj: AlarmInit | string, hermes: Hermes) {
         if (typeof obj === 'string') {
-            this.__constructorLoad(obj, hermes)
-        } else if (typeof obj === 'object') {
-            this.__constructorCreate(obj, hermes)
-        }
-    }
-
-    __constructorLoad(rawString: string, hermes: Hermes) {
-        const loadData: AlarmString = JSON.parse(rawString)
+            const loadData: AlarmString = JSON.parse(obj)
         
-        this.id = loadData.id
-        this.name = loadData.name
+            this.id = loadData.id
+            this.name = loadData.name
 
-        this.rawDatetime = new Date(loadData.rawDatetime)
-        this.rawRecurrence = loadData.rawRecurrence || null
+            this.date = new Date(loadData.rawDatetime)
+            this.recurrence = loadData.rawRecurrence || null
 
-        this.schedule = loadData.schedule
-        this.isExpired = loadData.isExpired
+            this.schedule = loadData.schedule
+            this.isExpired = loadData.isExpired
 
-        this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
+            this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
 
-        if (this.nextExecution.getTime() < Date.now()) {
-            this.isExpired = true
+            if (this.nextExecution.getTime() < Date.now()) {
+                this.isExpired = true
+            }
+
+            if (!this.isExpired) {
+                this.makeAlive(hermes)
+            }
+        } else if (typeof obj === 'object') {
+            this.id = timestamp('YYYYMMDD-HHmmss-ms')
+            this.name = obj.name || null
+            this.date = obj.date || new Date()
+            this.recurrence = obj.recurrence || null
+    
+            this.schedule = getScheduleString(this.date, this.recurrence)
+            this.isExpired = false
+    
+            this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
+    
+            if (this.nextExecution.getTime() < Date.now() + 15000) {
+                throw new Error('pastAlarmDatetime')
+            }
+    
+            this.makeAlive(hermes)
+            this.save()
         }
-
-        if (!this.isExpired) {
-            this.__make_alive(hermes)
-        }
-    } 
-
-    __constructorCreate(initData: AlarmInit, hermes: Hermes) {
-        this.id = timestamp('YYYYMMDD-HHmmss-ms')
-        this.name = initData.name
-
-        this.rawDatetime = initData.datetime || new Date()
-        this.rawRecurrence = initData.recurrence || null
-
-        this.schedule = getScheduleString(this.rawDatetime, this.rawRecurrence)
-        this.isExpired = false
-
-        this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
-
-        if (this.nextExecution.getTime() < Date.now() + 15000) {
-            throw new Error('pastAlarmDatetime')
-        }
-
-        this.__make_alive(hermes)
-        this.save()
     }
 
     /**
@@ -103,7 +88,7 @@ export class Alarm {
      * 
      * @param hermes 
      */
-    __make_alive(hermes: Hermes) {
+    makeAlive(hermes: Hermes) {
         const dialogId: string = `snips-assistant:alarm:${this.id}`
 
         const onAlarmArrive = () => {
@@ -129,14 +114,14 @@ export class Alarm {
             })
         }
 
-        hermes.dialog().sessionFlow(dialogId, (msg, flow) => {
-            flow.continue('snips-assistant:Stop', (msg, flow) => {
+        hermes.dialog().sessionFlow(dialogId, (_, flow) => {
+            flow.continue('snips-assistant:Stop', (_, flow) => {
                 flow.end()
             })
-            flow.continue('snips-assistant:Silence', (msg, flow) => {
+            flow.continue('snips-assistant:Silence', (_, flow) => {
                 flow.end()
             })
-            flow.continue('snips-assistant:AddTime', (msg, flow) => {
+            flow.continue('snips-assistant:AddTime', (_, flow) => {
                 flow.end()
             })
             //flow.notRecognized()
@@ -160,8 +145,8 @@ export class Alarm {
             id: this.id,
             name: this.name,
             schedule: this.schedule,
-            rawDatetime: this.rawDatetime.toJSON(),
-            rawRecurrence: this.rawRecurrence,
+            date: this.date.toJSON(),
+            recurrence: this.recurrence,
             nextExecution: this.nextExecution,
             isExpired: this.isExpired
         })
@@ -212,7 +197,7 @@ export class Alarm {
      * Reset alarm, update nextExecution
      */
     reset() {
-        if (!this.rawRecurrence) {
+        if (!this.recurrence) {
             this.setExpired()
         }
 
@@ -255,6 +240,5 @@ export class Alarm {
         if (!newDatetimeSnips && !newRecurrence) {
             throw new Error('noRescheduleTimeFound')
         }
-        // reserved
     }
 }

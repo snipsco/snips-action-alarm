@@ -1,4 +1,4 @@
-import { logger, translation, beautify, slot, Database } from '../utils'
+import { logger, translation, Database } from '../utils'
 import handlers, { Handler } from './index'
 import { Hermes } from 'hermes-javascript'
 import commonHandler, { KnownSlots } from './common'
@@ -13,18 +13,9 @@ export const setAlarmHandler: Handler = async function (msg, flow, hermes: Herme
         date
     } = await commonHandler(msg, knownSlots)
 
-    // Required slot: name
-    if (!name && (recurrence || date)) {
-        throw new Error('intentNotRecognized')
-    }
-
-    // Required slot: datetime or recurrence
-    if (name && !(recurrence || date)) {
-        throw new Error('intentNotRecognized')
-    }
-
-    // Required slot: name, datetime/recurrence
-    if (!name && !(recurrence || date)) {
+    // Required slot: datetime/recurrence
+    //TODO: elicitation
+    if (!(recurrence || date)) {
         flow.continue('snips-assistant:SetAlarm', (msg, flow) => {
             if (knownSlots.depth) {
                 knownSlots.depth -= 1
@@ -36,16 +27,13 @@ export const setAlarmHandler: Handler = async function (msg, flow, hermes: Herme
     }
     
     const alarmInitObj: AlarmInit = {
-        name: name || '',
-        datetime: date || undefined,
+        name: name || undefined,
+        date: date || undefined,
         recurrence: recurrence || undefined 
     }
     
     const alarm: Alarm = database.add(alarmInitObj)
     
     flow.end()
-    return translation.randomTranslation('setAlarm.info.alarm_SetFor_', {
-        name,
-        time: beautify.datetime(alarm.nextExecution)
-    })
+    return translation.setAlarmToSpeech(alarm)
 }

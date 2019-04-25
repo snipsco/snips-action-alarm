@@ -59,7 +59,6 @@ export default async function (msg: IntentMessage, knownSlots: KnownSlots) {
 
         if (dateSlot) {
             if (dateSlot.value.kind === 'TimeInterval') {
-                // Use start time as time value
                 date = getCompletedDatetime({
                     kind: slotType.instantTime,
                     value: dateSlot.value.from,

@@ -10,14 +10,11 @@ function isDateInRange(datetimeRange: DatetimeRange, datetimeObj: Date) {
 }
 
 export class Database {
-    // Save all the alarms
-    __alarms: Alarm[] = []
-
-    // Save the hermes client
-    __hermesClient: Hermes
+    alarms: Alarm[] = []
+    hermes: Hermes
 
     constructor(hermes: Hermes) {
-        this.__hermesClient = hermes
+        this.hermes = hermes
         this.loadSavedAlarms()
     }
 
@@ -34,14 +31,14 @@ export class Database {
 
             const alarmRawString = fs.readFileSync(pathAbs).toString()
 
-            const alarm = new Alarm(alarmRawString, this.__hermesClient)
-            this.__alarms.push(alarm)
+            const alarm = new Alarm(alarmRawString, this.hermes)
+            this.alarms.push(alarm)
         })
     }
 
     add(alarmInitObj: AlarmInit): Alarm {
-        const alarm = new Alarm(alarmInitObj, this.__hermesClient)
-        this.__alarms.push(alarm)
+        const alarm = new Alarm(alarmInitObj, this.hermes)
+        this.alarms.push(alarm)
         return alarm
     }
 
@@ -54,13 +51,13 @@ export class Database {
      * @param isExpired 
      */
     get(name?: string, datetimeRange?: DatetimeRange, recurrence?: string, isExpired?: boolean) {
-        return this.__alarms.filter(alarm =>
+        return this.alarms.filter(alarm =>
             (!name || name === alarm.name) &&
-            (!datetimeRange || isDateInRange(datetimeRange, alarm.rawDatetime)) &&
-            (!recurrence || recurrence === alarm.rawRecurrence) &&
+            (!datetimeRange || isDateInRange(datetimeRange, alarm.date)) &&
+            (!recurrence || recurrence === alarm.recurrence) &&
             (isExpired === alarm.isExpired)
-        ).sort( (a, b) => {
-            return (a.rawDatetime.getTime() - b.rawDatetime.getTime())
+        ).sort((a, b) => {
+            return (a.date.getTime() - b.date.getTime())
         })
     }
 
@@ -70,7 +67,7 @@ export class Database {
      * @param id 
      */
     getById(id: string): Alarm {
-        const res = this.__alarms.filter(alarm => alarm.id === id)
+        const res = this.alarms.filter(alarm => alarm.id === id)
         if (res.length === 0) {
             throw new Error('canNotFindAlarm')
         }
@@ -86,7 +83,7 @@ export class Database {
         const alarm = this.getById(id)
         if (alarm) {
             alarm.delete()
-            this.__alarms.splice(this.__alarms.indexOf(alarm), 1)
+            this.alarms.splice(this.alarms.indexOf(alarm), 1)
             return true
         }
 
@@ -97,10 +94,10 @@ export class Database {
      * Delete all alarms
      */
     deleteAll() {
-        this.__alarms.forEach(alarm => {
+        this.alarms.forEach(alarm => {
             alarm.delete()
         })
-        this.__alarms.splice(0)
+        this.alarms.splice(0)
     }
 
     /**
@@ -108,7 +105,7 @@ export class Database {
      */
     destroy() {
         // disable all the alarms (task crons)
-        this.__alarms.forEach(alarm => {
+        this.alarms.forEach(alarm => {
             alarm.destroy()
         })
     }
