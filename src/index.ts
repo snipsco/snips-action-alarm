@@ -1,8 +1,12 @@
+import fs from 'fs'
+import path from 'path'
 import { withHermes } from 'hermes-javascript'
 import bootstrap from './bootstrap'
 import handlers from './handlers'
 import { translation, logger } from './utils'
 import { Database } from './utils/alarm/database'
+
+const alarmWav = fs.readFileSync(path.resolve(__dirname, '../assets/alarm.wav'))
 
 // Initialize hermes
 export default function ({
@@ -15,6 +19,13 @@ export default function ({
                 // Bootstrap config, locale, i18n…
                 await bootstrap(bootstrapOptions)
                 const dialog = hermes.dialog()
+
+                // Publish the alarm sound.
+                hermes.tts().publish('register_sound', {
+                    soundId: 'alarm.beep',
+                    wavSound: alarmWav.toString('base64'),
+                    wavSoundLen: alarmWav.length
+                })
 
                 const database = new Database(hermes)
 

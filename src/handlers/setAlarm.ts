@@ -1,5 +1,5 @@
 import { logger, translation, Database } from '../utils'
-import handlers, { Handler } from './index'
+import { Handler } from './index'
 import { Hermes } from 'hermes-javascript'
 import commonHandler, { KnownSlots } from './common'
 import { Alarm, AlarmInit } from '../utils/alarm'

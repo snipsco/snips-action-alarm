@@ -94,7 +94,7 @@ export class Alarm {
             hermes.dialog().publish('start_session', {
                 init: {
                     type: Dialog.enums.initType.action,
-                    text: message,
+                    text: '[[sound:alarm.beep]] ' + message,
                     intentFilter: [
                         'snips-assistant:Stop',
                         'snips-assistant:Silence',
