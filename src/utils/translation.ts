@@ -130,38 +130,6 @@ function getList(alarms: Alarm[], dateRange?: DateRange): string {
     return tts
 }
 
-// "The most recent one is: <name> set for <time>."
-function getRecent(alarms: Alarm[]): string {
-    const i18n = i18nFactory.get()
-
-    let messageHead = i18n('getAlarms.info.theMostRecentIs')
-    let messageContent = i18n('getAlarms.info.alarm_SetFor_', {
-        name: alarms[0].name,
-        time: beautify.date(alarms[0].date)
-    })
-
-    return alarms.length === 1 ? messageContent : messageHead + messageContent
-}
-
-// "The remaining alarm(s) are: <name> set for <time>."
-function getRemaining(alarms: Alarm[]): string {
-    const i18n = i18nFactory.get()
-    let message = ''
-
-    message += i18n('getAlarms.info.theRemainingAlarmsAre', {
-        odd: alarms.length > 2 ? 's' : '',
-        be: alarms.length > 2 ? 'are' : 'is'
-    })
-    for (let i = 1; i < alarms.length; i++) {
-        message += i18n('getAlarms.info.alarm_SetFor_', {
-            name: alarms[i].name,
-            time: beautify.date(alarms[i].date)
-        })
-    }
-
-    return alarms.length > 1 ? message : ''
-}
-
 export const translation = {
     // Outputs an error message based on the error object, or a default message if not found.
     errorMessage: async (error: Error): Promise<string> => {
@@ -207,13 +175,15 @@ export const translation = {
     },
 
     setAlarmToSpeech(alarm: Alarm): string {
+        const i18n = i18nFactory.get()
+
         if (alarm.name) {
-            return translation.randomTranslation('setAlarm.info.alarm_SetFor_Name', {
+            return i18n('setAlarm.info.alarm_SetFor_Name', {
                 name: alarm.name,
                 time: beautify.datetime(alarm.nextExecution)
             })
         } else {
-            return translation.randomTranslation('setAlarm.info.alarm_SetFor', {
+            return i18n('setAlarm.info.alarm_SetFor', {
                 time: beautify.datetime(alarm.nextExecution)
             })
         }

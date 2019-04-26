@@ -13,26 +13,14 @@
     },
     "setAlarm": {
         "ask": {
-            "createAlarm": [
-                "Would you like to create one?"
-            ],
-            "name": [
-                "How should I name this alarm?"
-            ],
-            "time": [
-                "When should I set this alarm for?"
-            ],
-            "nameAndTime": [
-                "When should I set this alarm and how should I name it?"
-            ]
+            "createAlarm": "Would you like to create one?",
+            "name": "How should I name this alarm?",
+            "time": "When should I set this alarm for?",
+            "nameAndTime": "When should I set this alarm and how should I name it?"
         },
         "info": {
-            "alarm_SetFor": [
-                "Okay, I set an alarm for {{ time }}."
-            ],
-            "alarm_SetFor_Name": [
-                "Okay, an alarm named {{ name }} is set for {{ time }}."
-            ]
+            "alarm_SetFor": "Okay, I set an alarm for {{ time }}.",
+            "alarm_SetFor_Name": "Okay, an alarm named {{ name }} is set for {{ time }}."
         }
     },
     "getAlarms": {
@@ -49,9 +37,7 @@
             "found_AlarmsSetFor_": "I found {{ number }} alarm{{odd}} set for {{ time }}.",
             "found_AlarmsSetForEvery_": "I found {{ number }} alarm{{odd}} set for each {{ recurrence }}.",
             "found_AlarmsNamed_AndSetFor_": "I found {{ number }} alarm{{odd}} named {{ name }} set for {{ time }}.",
-            "found_AlarmsNamed_AndSetForEvery_": "I found {{ number }} alarm{{odd}} named {{ name }} set for each {{ recurrence }}.",
-            "theMostRecentIs": "The most recent one is: ",
-            "theRemainingAlarmsAre": "The remaining alarm{{odd}} {{ be }}: "
+            "found_AlarmsNamed_AndSetForEvery_": "I found {{ number }} alarm{{odd}} named {{ name }} set for each {{ recurrence }}."
         },
         "list": {
             "alarm_SetFor_": "One is set for {{ time }}.",
@@ -59,6 +45,12 @@
             "alarm_SetFor_Name_AndRecurrence": "An alarm named {{ name }} is set for {{ time }} {{ recurrence }}.",
             "alarm_SetFor_Name": "An alarm named {{ name }} is set for {{ time }}."
         }
+    },
+    "cancelAlarm": {
+        "confirmationSingle": "Are you sure you want to remove it?",
+        "confirmationAll": "Are you sure you want to remove them?",
+        "successfullyDeletedSingle": "Your alarm has been deleted.",
+        "successfullyDeletedAll": "Your alarms have been deleted."
     },
     "moment": {
         "date": {
