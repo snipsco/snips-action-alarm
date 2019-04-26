@@ -4,23 +4,24 @@ import { logger } from './logger'
 
 export type DateRange = {
     min: Date
-    max: Date
+    max: Date,
+    grain?: string
 }
 
 export const getDateRange = (date: Date, grainValue: string): DateRange => {
     switch (grainValue) {
         case grain.minute:
-            return { min: date, max: new Date(date.getTime() + 1000 * 60) }
+            return { min: date, max: new Date(date.getTime() + 1000 * 60), grain: grainValue }
         case grain.hour:
-            return { min: date, max: new Date(date.getTime() + 1000 * 60 * 60) }
+            return { min: date, max: new Date(date.getTime() + 1000 * 60 * 60), grain: grainValue }
         case grain.day:
-            return { min: date, max: new Date(date.getTime() + 1000 * 60 * 60 * 24) }
+            return { min: date, max: new Date(date.getTime() + 1000 * 60 * 60 * 24), grain: grainValue }
         case grain.week:
-            return { min: date, max: new Date(date.getTime() + 1000 * 60 * 60 * 24 * 7) }
+            return { min: date, max: new Date(date.getTime() + 1000 * 60 * 60 * 24 * 7), grain: grainValue }
         case grain.month:
-            return { min: date, max: new Date(date.getTime() + 1000 * 60 * 60 * 24 * 30) }
+            return { min: date, max: new Date(date.getTime() + 1000 * 60 * 60 * 24 * 30), grain: grainValue}
         case grain.year:
-            return { min: date, max: new Date(date.getTime() + 1000 * 60 * 60 * 24 * 365) }
+            return { min: date, max: new Date(date.getTime() + 1000 * 60 * 60 * 24 * 365), grain: grainValue }
         default:
             // Not sure which will be this case, Second? Quarter?
             return { min: date, max: new Date(date.getTime() + 1000 * 60) }

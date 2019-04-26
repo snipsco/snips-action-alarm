@@ -11,11 +11,10 @@ export const getAlarmHandler: Handler = async function (msg, flow, _: Hermes, da
 
     const {
         name,
-        date,
         recurrence
     } = await commonHandler(msg, knownSlots)
 
-    let dateRange: DateRange | undefined, grain: string | undefined
+    let dateRange: DateRange | undefined
 
     const dateSlot: NluSlot<slotType.instantTime | slotType.timeInterval> | null = message.getSlotsByName(msg, 'datetime', {
         onlyMostConfident: true,
@@ -26,13 +25,12 @@ export const getAlarmHandler: Handler = async function (msg, flow, _: Hermes, da
         if (dateSlot.value.kind === slotType.timeInterval) {
             dateRange = { min: new Date(dateSlot.value.from), max: new Date(dateSlot.value.to) }
         } else if (dateSlot.value.kind === slotType.instantTime) {
-            grain = dateSlot.value.grain
-            dateRange = getDateRange(new Date(dateSlot.value.value), grain)
+            dateRange = getDateRange(new Date(dateSlot.value.value), dateSlot.value.grain)
         }
     }
 
     const alarms = database.get(name, dateRange, recurrence)
 
     flow.end()
-    return translation.getAlarmsToSpeech(alarms, name, date, grain, recurrence)
+    return translation.getAlarmsToSpeech(alarms, name, dateRange, recurrence)
 }

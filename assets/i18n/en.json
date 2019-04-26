@@ -65,14 +65,19 @@
             "sameDay": "[today]",
             "nextDay": "[tomorrow]",
             "nextWeek": "dddd",
-            "sameElse": "[on] MMMM D"
+            "sameElse": "MMMM D"
         },
+        "time": "h m A",
         "datetime": {
             "sameDay": "[today] [at] h m A",
             "nextDay": "[tomorrow] [at] h m A",
             "nextWeek": "dddd [at] h m A",
-            "sameElse": "[on] MMMM D [at] h m A"
+            "sameElse": "MMMM D [at] h m A"
         },
-        "time": "h m A"
+        "daterange": {
+            "weekEnd": "this week-end",
+            "nextWeek": "next week",
+            "fromTo": "from {{ date_1 }} to {{ date_2 }}"
+        }
     }
 }

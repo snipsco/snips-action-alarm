@@ -1,14 +1,48 @@
 import { i18nFactory } from '../factories/i18nFactory'
 import { Alarm } from './alarm'
 import { beautify } from './beautify'
+import { DateRange } from './parser'
 
-function getHead(alarms: Alarm[], name?: string, date?: Date, grain?: string, recurrence?: string): string {
+function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurrence?: string): string {
     const i18n = i18nFactory.get()
 
-    const beautifyFct = (grain && (grain === 'Hour' || grain === 'Minute')) ? beautify.datetime : beautify.date
+    let time: string = ''
+    if (dateRange) {
+        function getFormat(dateRange?: DateRange): string {
+            if (dateRange) {
+                if (dateRange.grain) {
+                    if (dateRange.grain === 'Day') {
+                        return 'date'
+                    }
+                    if (dateRange.grain === 'Week') {
+                        return 'daterange'
+                    }
+                    return 'datetime'
+                } else {
+                    return 'daterange'
+                }
+            }
+        
+            return ''
+        }
+
+        switch (getFormat(dateRange)) {
+            case 'datetime':
+                time = beautify.datetime(dateRange.min)
+                break
+            case 'daterange':
+                time = beautify.daterange(dateRange)
+                break
+            case 'date':
+                time = beautify.date(dateRange.min)
+                break
+            default:
+                time = beautify.datetime(dateRange.min)
+        }
+    }
 
     // "I found <number> alarm(s) named <name>."
-    if (name && !date && !recurrence) {
+    if (name && !dateRange && !recurrence) {
         return i18n('getAlarms.head.found_AlarmsNamed_', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
@@ -17,16 +51,16 @@ function getHead(alarms: Alarm[], name?: string, date?: Date, grain?: string, re
     }
 
     // "I found <number> alarm(s) set for <time>."
-    if (!name && date && !recurrence) {
+    if (!name && dateRange && !recurrence) {
         return i18n('getAlarms.head.found_AlarmsSetFor_', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
-            time: beautifyFct(date)
+            time
         })
     }
 
     // "I found <number> alarm(s) set for every <recurrence>."
-    if (!name && !date && recurrence) {
+    if (!name && !dateRange && recurrence) {
         return i18n('getAlarms.head.found_AlarmsSetForEvery_', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : ''
@@ -35,17 +69,17 @@ function getHead(alarms: Alarm[], name?: string, date?: Date, grain?: string, re
     }
 
     // "I found <number> alarm(s) named <name> and set for <time>."
-    if (name && date && !recurrence) {
+    if (name && dateRange && !recurrence) {
         return i18n('getAlarms.head.found_AlarmsNamed_AndSetFor_', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
             name,
-            time: beautifyFct(date)
+            time
         })
     }
 
     // "I found <number> alarm(s) named <name> and set for <recurrence>."
-    if (name && date && recurrence) {
+    if (name && dateRange && recurrence) {
         return i18n('getAlarms.head.found_AlarmsNamed_AndSetForEvery_', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
@@ -55,7 +89,7 @@ function getHead(alarms: Alarm[], name?: string, date?: Date, grain?: string, re
     }
 
     // "I found <number> alarm(s)."
-    if (!name && !date && !recurrence) {
+    if (!name && !dateRange && !recurrence) {
         return i18n('getAlarms.head.found_Alarms', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : ''
@@ -66,12 +100,11 @@ function getHead(alarms: Alarm[], name?: string, date?: Date, grain?: string, re
 }
 
 // "<name> set for <time>."
-function getList(alarms: Alarm[], date?: Date): string {
+function getList(alarms: Alarm[], dateRange?: DateRange): string {
     const i18n = i18nFactory.get()
     let tts: string = ''
 
-    const beautifyFct = (date) ? beautify.time : beautify.datetime
-
+    const beautifyFct = (dateRange && dateRange.grain === 'Day') ? beautify.time : beautify.datetime
 
     if (alarms.length === 1) {
         tts += i18n('getAlarms.list.singleAlarm_SetFor_', {
@@ -158,16 +191,16 @@ export const translation = {
         return possibleValues[randomIndex]
     },
 
-    getAlarmsToSpeech(alarms: Alarm[], name?: string, date?: Date, grain?: string, recurrence?: string): string {
+    getAlarmsToSpeech(alarms: Alarm[], name?: string, dateRange?: DateRange, recurrence?: string): string {
         const i18n = i18nFactory.get()
 
         let tts: string = ''
 
-        tts += getHead(alarms, name, date, grain, recurrence)
+        tts += getHead(alarms, name, dateRange, recurrence)
         
         if (alarms.length > 0) {
             tts += ' '
-            tts += getList(alarms, date)
+            tts += getList(alarms, dateRange)
         }
 
         return tts
