@@ -91,11 +91,10 @@ export const getScheduleString = (datetime: Date, recurrence: string | null): st
         sundays: '* * Sun',
         weekly: `* * ${datetime.getDay()}`,
         daily: '* * *',
-        monthly: `${datetime.getDate()} * *`,
-        weekends: '* * Sat,Sun'
+        monthly: `${datetime.getDate()} * *`
     }
 
-    let schedule = `${datetime.getSeconds()} ${datetime.getMinutes()} ${datetime.getHours()} `
+    let schedule = `${ datetime.getSeconds() } ${ datetime.getMinutes() } ${ datetime.getHours() } `
 
     if (recurrence) {
         for (let [key, value] of Object.entries(mapper)) {
@@ -104,7 +103,7 @@ export const getScheduleString = (datetime: Date, recurrence: string | null): st
             }
         }
     } else {
-        schedule += `${datetime.getDate()} ${datetime.getMonth()+1} ${datetime.getDay()}`
+        schedule += `${ datetime.getDate() } ${ datetime.getMonth() + 1 } ${ datetime.getDay() }`
     }
 
     logger.debug(schedule)

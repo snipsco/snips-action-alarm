@@ -8,7 +8,8 @@
     },
     "alarm": {
         "info": {
-            "itsTimeTo": "An alarm is up"
+            "itsTimeTo": "An alarm is up!",
+            "itsTimeTo_Name": "The alarm named {{ name }} is up!"
         }
     },
     "setAlarm": {

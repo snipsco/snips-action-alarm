@@ -63,8 +63,8 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
     if (!name && !dateRange && recurrence) {
         return i18n('getAlarms.head.found_AlarmsSetForEvery_', {
             number: alarms.length,
-            odd: alarms.length > 1 ? 's' : ''
-            //recurrence: getRecurrenceHuman(alarm.recurrence)
+            odd: alarms.length > 1 ? 's' : '',
+            recurrence
         })
     }
 
@@ -83,8 +83,8 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
         return i18n('getAlarms.head.found_AlarmsNamed_AndSetForEvery_', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
-            name
-            //recurence: getRecurrenceHuman(alarm.recurrence)
+            name,
+            recurrence
         })
     }
 

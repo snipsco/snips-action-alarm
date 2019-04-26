@@ -87,9 +87,15 @@ export class Alarm {
 
         const onAlarmArrive = () => {
             const i18n = i18nFactory.get()
-            const message = i18n('alarm.info.itsTimeTo', {
-                name: this.name
-            })
+
+            let message: string = ''
+            if (this.name) {
+                message += i18n('alarm.info.itsTimeTo_Name', {
+                    name: this.name
+                })
+            } else {
+                message += i18n('alarm.info.itsTimeTo')
+            }
 
             hermes.dialog().publish('start_session', {
                 init: {
@@ -221,10 +227,6 @@ export class Alarm {
         }
 
         this.isExpired = true
-    }
-
-    addTime(duration: number) {
-        //reserved
     }
 
     reschedule(
