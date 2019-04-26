@@ -6,15 +6,16 @@ import {
     SLOT_CONFIDENCE_THRESHOLD
 } from '../constants'
 
-export const getAlarmHandler: Handler = async function (msg, flow, hermes: Hermes, database: Database, knownSlots: KnownSlots = { depth: 2 }) {
+export const getAlarmHandler: Handler = async function (msg, flow, _: Hermes, database: Database, knownSlots: KnownSlots = { depth: 2 }) {
     logger.info('GetAlarm')
 
     const {
         name,
+        date,
         recurrence
     } = await commonHandler(msg, knownSlots)
 
-    let dateRange: DateRange | undefined
+    let dateRange: DateRange | undefined, grain: string | undefined
 
     const dateSlot: NluSlot<slotType.instantTime | slotType.timeInterval> | null = message.getSlotsByName(msg, 'datetime', {
         onlyMostConfident: true,
@@ -25,12 +26,13 @@ export const getAlarmHandler: Handler = async function (msg, flow, hermes: Herme
         if (dateSlot.value.kind === slotType.timeInterval) {
             dateRange = { min: new Date(dateSlot.value.from), max: new Date(dateSlot.value.to) }
         } else if (dateSlot.value.kind === slotType.instantTime) {
-            dateRange = getDateRange(new Date(dateSlot.value.value), dateSlot.value.grain)
+            grain = dateSlot.value.grain
+            dateRange = getDateRange(new Date(dateSlot.value.value), grain)
         }
     }
 
     const alarms = database.get(name, dateRange, recurrence)
 
     flow.end()
-    return translation.getAlarmsToSpeech(alarms)
+    return translation.getAlarmsToSpeech(alarms, name, date, grain, recurrence)
 }

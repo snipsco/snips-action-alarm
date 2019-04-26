@@ -4,7 +4,7 @@ import { Hermes } from 'hermes-javascript'
 import commonHandler, { KnownSlots } from './common'
 import { Alarm, AlarmInit } from '../utils/alarm'
 
-export const setAlarmHandler: Handler = async function (msg, flow, hermes: Hermes, database: Database, knownSlots: KnownSlots = { depth: 2 }) {
+export const setAlarmHandler: Handler = async function (msg, flow, _: Hermes, database: Database, knownSlots: KnownSlots = { depth: 2 }) {
     logger.info('SetAlarm')
 
     const {

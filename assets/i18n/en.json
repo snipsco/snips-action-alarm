@@ -31,7 +31,7 @@
                 "Okay, I set an alarm for {{ time }}."
             ],
             "alarm_SetFor_Name": [
-                "Okay, alarm: {{ name }} is set for {{ time }}."
+                "Okay, an alarm named {{ name }} is set for {{ time }}."
             ]
         }
     },
@@ -39,10 +39,9 @@
         "ask": {
             "ifListRestAlarms": "Would you like to list all the remaining alarms?"
         },
-        "info": {
+        "head": {
             "foundAlarms": "I found {{ number }} alarm{{odd}}.",
             "foundComingAlarms": "I found {{ number }} coming alarm{{odd}}.",
-            "alarmSetFor": "Alarm: {{ name }}, set for {{ datetime }} {{ recurrence }}.",
             "noAlarmFound": "It seems like you have no alarm set for the moment.",
             "noSuchAlarmsFound": "It seems like you have no such alarm set for the moment.",
             "found_Alarms": "I found {{ number }} alarm{{odd}}.",
@@ -52,9 +51,13 @@
             "found_AlarmsNamed_AndSetFor_": "I found {{ number }} alarm{{odd}} named {{ name }} set for {{ time }}.",
             "found_AlarmsNamed_AndSetForEvery_": "I found {{ number }} alarm{{odd}} named {{ name }} set for each {{ recurrence }}.",
             "theMostRecentIs": "The most recent one is: ",
-            "theRemainingAlarmsAre": "The remaining alarm{{odd}} {{ be }}: ",
+            "theRemainingAlarmsAre": "The remaining alarm{{odd}} {{ be }}: "
+        },
+        "list": {
             "alarm_SetFor_": "One is set for {{ time }}.",
-            "alarm_SetFor_Name": "{{ name }}, set for {{ time }}."
+            "singleAlarm_SetFor_": "It is set for {{ time }}.",
+            "alarm_SetFor_Name_AndRecurrence": "An alarm named {{ name }} is set for {{ time }} {{ recurrence }}.",
+            "alarm_SetFor_Name": "An alarm named {{ name }} is set for {{ time }}."
         }
     },
     "moment": {

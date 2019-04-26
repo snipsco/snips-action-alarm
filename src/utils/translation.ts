@@ -2,73 +2,99 @@ import { i18nFactory } from '../factories/i18nFactory'
 import { Alarm } from './alarm'
 import { beautify } from './beautify'
 
-type AlarmsReport = {
-    head: string,
-    recent: string,
-    remaining: string,
-    all: string
-}
-
-function getHead(alarms: Alarm[]): string {
+function getHead(alarms: Alarm[], name?: string, date?: Date, grain?: string, recurrence?: string): string {
     const i18n = i18nFactory.get()
-    const alarm = alarms[0]
 
-    // "I have found <number> alarm(s) named <name>."
-    if (alarm.name && !alarm.date && !alarm.recurrence) {
-        return i18n('getAlarms.info.found_AlarmsNamed_', {
+    const beautifyFct = (grain && (grain === 'Hour' || grain === 'Minute')) ? beautify.datetime : beautify.date
+
+    // "I found <number> alarm(s) named <name>."
+    if (name && !date && !recurrence) {
+        return i18n('getAlarms.head.found_AlarmsNamed_', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
-            name: alarm.name
+            name
         })
     }
 
-    // "I have found <number> alarm(s) set for <time>."
-    if (!alarm.name && alarm.date && !alarm.recurrence) {
-        return i18n('getAlarms.info.found_AlarmsSetFor_', {
+    // "I found <number> alarm(s) set for <time>."
+    if (!name && date && !recurrence) {
+        return i18n('getAlarms.head.found_AlarmsSetFor_', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
-            time: beautify.date(alarm.date)
+            time: beautifyFct(date)
         })
     }
 
-    // "I have found <number> alarm(s) set for every <recurrence>."
-    if (!alarm.name && !alarm.date && alarm.recurrence) {
-        return i18n('getAlarms.info.found_AlarmsSetForEvery_', {
+    // "I found <number> alarm(s) set for every <recurrence>."
+    if (!name && !date && recurrence) {
+        return i18n('getAlarms.head.found_AlarmsSetForEvery_', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : ''
             //recurrence: getRecurrenceHuman(alarm.recurrence)
         })
     }
 
-    // "I have found <number> alarm(s) named <name> and set for <time>."
-    if (alarm.name && alarm.date && !alarm.recurrence) {
-        return i18n('getAlarms.info.found_AlarmsNamed_AndSetFor_', {
+    // "I found <number> alarm(s) named <name> and set for <time>."
+    if (name && date && !recurrence) {
+        return i18n('getAlarms.head.found_AlarmsNamed_AndSetFor_', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
-            name: alarm.name,
-            time: beautify.date(alarm.date)
+            name,
+            time: beautifyFct(date)
         })
     }
 
-    // "I have found <number> alarm(s) named <name> and set for <recurrence>."
-    if (alarm.name && alarm.date && alarm.recurrence) {
-        return i18n('getAlarms.info.found_AlarmsNamed_AndSetForEvery_', {
+    // "I found <number> alarm(s) named <name> and set for <recurrence>."
+    if (name && date && recurrence) {
+        return i18n('getAlarms.head.found_AlarmsNamed_AndSetForEvery_', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
-            name: alarm.name
+            name
             //recurence: getRecurrenceHuman(alarm.recurrence)
         })
     }
 
-    // "I have found <number> alarm(s)."
-    if (!alarm.name && !alarm.date && !alarm.recurrence) {
-        return i18n('getAlarms.info.found_Alarms', {
+    // "I found <number> alarm(s)."
+    if (!name && !date && !recurrence) {
+        return i18n('getAlarms.head.found_Alarms', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : ''
         })
     }
 
     return ''
+}
+
+// "<name> set for <time>."
+function getList(alarms: Alarm[], date?: Date): string {
+    const i18n = i18nFactory.get()
+    let tts: string = ''
+
+    const beautifyFct = (date) ? beautify.time : beautify.datetime
+
+
+    if (alarms.length === 1) {
+        tts += i18n('getAlarms.list.singleAlarm_SetFor_', {
+            time: beautifyFct(alarms[0].date)
+        })
+    } else {
+        for (let i = 0; i < alarms.length; i++) {
+            if (alarms[i].name) {
+                tts += i18n('getAlarms.list.alarm_SetFor_Name', {
+                    name: alarms[i].name,
+                    time: beautifyFct(alarms[i].date)
+                })
+            } else {
+                tts += i18n('getAlarms.list.alarm_SetFor_', {
+                    time: beautifyFct(alarms[i].date)
+                })
+            }
+            
+            tts += ' '
+        }
+    }
+
+    return tts
 }
 
 // "The most recent one is: <name> set for <time>."
@@ -103,38 +129,6 @@ function getRemaining(alarms: Alarm[]): string {
     return alarms.length > 1 ? message : ''
 }
 
-// "<name> set for <time>."
-function getAll(alarms: Alarm[]): string {
-    const i18n = i18nFactory.get()
-    let tts: string = ''
-
-    for (let i = 0; i < alarms.length; i++) {
-        if (alarms[i].name) {
-            tts += i18n('getAlarms.info.alarm_SetFor_Name', {
-                name: alarms[i].name,
-                time: beautify.datetime(alarms[i].date)
-            })
-        } else {
-            tts += i18n('getAlarms.info.alarm_SetFor_', {
-                time: beautify.datetime(alarms[i].date)
-            })
-        }
-        
-        tts += ' '
-    }
-
-    return tts
-}
-
-function buildAlarmsReport(alarms: Alarm[]): AlarmsReport {
-    return {
-        head: getHead(alarms),
-        recent: getRecent(alarms),
-        remaining: getRemaining(alarms),
-        all: getAll(alarms)
-    }
-}
-
 export const translation = {
     // Outputs an error message based on the error object, or a default message if not found.
     errorMessage: async (error: Error): Promise<string> => {
@@ -164,16 +158,16 @@ export const translation = {
         return possibleValues[randomIndex]
     },
 
-    getAlarmsToSpeech(alarms: Alarm[]): string {
+    getAlarmsToSpeech(alarms: Alarm[], name?: string, date?: Date, grain?: string, recurrence?: string): string {
         const i18n = i18nFactory.get()
 
         let tts: string = ''
 
-        if (alarms.length === 0) {
-            tts += i18n('getAlarms.info.noAlarmFound')
-        } else {
-            const alarmsReport = buildAlarmsReport(alarms)
-            tts += alarmsReport.head + ' ' + alarmsReport.all
+        tts += getHead(alarms, name, date, grain, recurrence)
+        
+        if (alarms.length > 0) {
+            tts += ' '
+            tts += getList(alarms, date)
         }
 
         return tts
