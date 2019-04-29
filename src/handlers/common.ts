@@ -1,5 +1,5 @@
-import { IntentMessage, slotType, NluSlot, grain } from 'hermes-javascript'
-import { message, logger, getCompletedDatetime } from '../utils'
+import { IntentMessage, slotType, NluSlot } from 'hermes-javascript'
+import { message, logger } from '../utils'
 import {
     SLOT_CONFIDENCE_THRESHOLD,
     INTENT_PROBABILITY_THRESHOLD,
@@ -51,31 +51,8 @@ export default async function (msg: IntentMessage, knownSlots: KnownSlots) {
         recurrence = knownSlots.recurrence
     }
 
-    if (!('date' in knownSlots)) {
-        const dateSlot: NluSlot<slotType.instantTime | slotType.timeInterval> | null = message.getSlotsByName(msg, 'datetime', {
-            onlyMostConfident: true,
-            threshold: SLOT_CONFIDENCE_THRESHOLD
-        })
-
-        if (dateSlot) {
-            if (dateSlot.value.kind === 'TimeInterval') {
-                date = getCompletedDatetime({
-                    kind: slotType.instantTime,
-                    value: dateSlot.value.from,
-                    grain: grain.minute,
-                    precision: 'Exact'
-                })
-            } else if (dateSlot.value.kind === 'InstantTime') {
-                date = getCompletedDatetime(dateSlot.value)
-            }
-        }
-    } else {
-        date = knownSlots.date
-    }
-
     logger.info('\tname: ', name)
     logger.info('\trecurrence: ', recurrence)
-    logger.info('\tdate: ', date)
 
-    return { name, recurrence, date }
+    return { name, recurrence }
 }

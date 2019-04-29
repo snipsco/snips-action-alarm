@@ -1,6 +1,6 @@
 import { logger, translation, message, Database, getDateRange, DateRange } from '../utils'
 import { Handler } from './index'
-import { Hermes, NluSlot, slotType, grain } from 'hermes-javascript'
+import { Hermes, NluSlot, slotType } from 'hermes-javascript'
 import commonHandler, { KnownSlots } from './common'
 import {
     SLOT_CONFIDENCE_THRESHOLD

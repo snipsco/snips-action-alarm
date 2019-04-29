@@ -2,9 +2,14 @@ import cron from 'node-cron'
 import { InstantTimeSlotValue, slotType, grain } from 'hermes-javascript'
 import { logger } from './logger'
 
+export type DateGrain = {
+    date: Date
+    grain?: string
+}
+
 export type DateRange = {
     min: Date
-    max: Date,
+    max: Date
     grain?: string
 }
 
@@ -29,42 +34,42 @@ export const getDateRange = (date: Date, grainValue: string): DateRange => {
 }
 
 /**
- * Convert a incompleted datetime to a exact time, filling the unclear parts by current time sub-segments
+ * Convert a incompleted date to a exact time, filling the unclear parts by current time sub-segments
  */
- export const getCompletedDatetime = (dateSlot: InstantTimeSlotValue<slotType.instantTime>): Date => {
-     const datetimeNow = new Date(Date.now())
-     let completedDatetime = new Date(dateSlot.value)
+export const getExactDate = (dateSlot: InstantTimeSlotValue<slotType.instantTime>): Date => {
+    const now = new Date(Date.now())
+    let date = new Date(dateSlot.value)
 
-     switch (dateSlot.grain) {
-         case 'Minute':// base: exact at YYYY-MM-DD HH-MM
-             return completedDatetime
-         // case 'Hour':// base: the next hour at HH:00
-         //     completedDatetime.setMinutes(datetimeNow.getMinutes())
-         //     return completedDatetime
-         case 'Day':// base: the next day at 00:00
-             completedDatetime.setHours(datetimeNow.getHours())
-             completedDatetime.setMinutes(datetimeNow.getMinutes())
-             return completedDatetime
-         case 'Week':// base: the first day of next weeek at 00:00
-             completedDatetime.setDate(completedDatetime.getDate() + datetimeNow.getDay() - 1)
-             completedDatetime.setHours(datetimeNow.getHours())
-             completedDatetime.setMinutes(datetimeNow.getMinutes())
-             return completedDatetime
-         case 'Month':// base: the first day of month at 00:00
-             completedDatetime.setDate(datetimeNow.getDate())
-             completedDatetime.setHours(datetimeNow.getHours())
-             completedDatetime.setMinutes(datetimeNow.getMinutes())
-             return completedDatetime
-         case 'Year':// base: the first day of year at 00:00
-             completedDatetime.setMonth(datetimeNow.getMonth())
-             completedDatetime.setDate(datetimeNow.getDate())
-             completedDatetime.setHours(datetimeNow.getHours())
-             completedDatetime.setMinutes(datetimeNow.getMinutes())
-             return completedDatetime
-         default:// base: exact at YYYY-MM-DD HH-MM-SS
-             return completedDatetime
-     }
- }
+    switch (dateSlot.grain) {
+        case grain.minute: // base: exact at YYYY-MM-DD HH-MM
+            return date
+        // case 'Hour': // base: the next hour at HH:00
+        //     date.setMinutes(now.getMinutes())
+        //     return date
+        case grain.day: // base: the next day at 00:00
+            date.setHours(now.getHours())
+            date.setMinutes(now.getMinutes())
+            return date
+        case grain.week: // base: the first day of next weeek at 00:00
+            date.setDate(date.getDate() + now.getDay() - 1)
+            date.setHours(now.getHours())
+            date.setMinutes(now.getMinutes())
+            return date
+        case grain.month: // base: the first day of month at 00:00
+            date.setDate(now.getDate())
+            date.setHours(now.getHours())
+            date.setMinutes(now.getMinutes())
+            return date
+        case grain.year: // base: the first day of year at 00:00
+            date.setMonth(now.getMonth())
+            date.setDate(now.getDate())
+            date.setHours(now.getHours())
+            date.setMinutes(now.getMinutes())
+            return date
+        default: // base: exact at YYYY-MM-DD HH-MM-SS
+            return date
+    }
+}
 
 /**
  * Convert a datetime and recurrence to a cron schedule expression
@@ -89,9 +94,8 @@ export const getScheduleString = (datetime: Date, recurrence: string | null): st
         fridays: '* * Fri',
         saturdays: '* * Sat',
         sundays: '* * Sun',
-        weekly: `* * ${datetime.getDay()}`,
-        daily: '* * *',
-        monthly: `${datetime.getDate()} * *`
+        weekly: `* * ${ datetime.getDay() }`,
+        daily: '* * *'
     }
 
     let schedule = `${ datetime.getSeconds() } ${ datetime.getMinutes() } ${ datetime.getHours() } `
