@@ -31,6 +31,49 @@ npm start
 node action-alarm.js
 ```
 
+## Test & Demo cases
+
+This app only supports french 🇫🇷 and english 🇬🇧.
+
+### `SetAlarm`
+
+#### Set an alarm, optionally indicating a name and a recurrence
+
+Set an alarm for the given time
+> *Hey Snips, set an alarm in 5 minutes*
+
+Set a named alarm for the given time
+> *Hey Snips, can you set an alarm named yoga class at 6pm?*
+
+Set a named alarm for the given time and recurrence
+> *Hey Snips, please set an alarm called wake up every saturday at 7am*
+
+### `GetAlarm`
+
+#### Get the list of alarms, optionally indicating a time, name or recurrence
+
+Get all the alarms
+> *Hey Snips, what are my active alarms?*
+
+Get the alarms with the given name
+> *Hey Snips, do I have active alarms named yoga class?*
+
+Get the alarms at the given time
+> *Hey Snips, do I have alarms set for this week-end?*
+
+### `CancelAlarm`
+
+#### Cancel an alarm, optionally indicating a time, name or recurrence
+
+Cancel all alarms
+> *Hey Snips, please cancel all my alarms*
+
+Cancel the alarms with the given name
+> *Hey Snips, please remove all the alarms called get up*
+
+Cancel the alarms at the given time and recurrence
+> *Hey Snips, could you cancel the alarm set on sundays at 1pm?*
+
 ## Debug
 
 In the `action-alarm.js` file:
