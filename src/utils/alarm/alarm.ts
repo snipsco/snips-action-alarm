@@ -20,6 +20,7 @@ export type AlarmString = {
     schedule: string
     date: string
     recurrence?: string
+    nextExecution: string
     isExpired: boolean
 }
 
@@ -50,12 +51,21 @@ export class Alarm {
             this.recurrence = data.recurrence || null
             this.name = data.name
             this.schedule = data.schedule
-            this.isExpired = data.isExpired
-            this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
+            this.nextExecution = new Date(data.nextExecution)
 
-            if (this.nextExecution.getTime() < Date.now()) {
-                this.isExpired = true
+            if (this.nextExecution < new Date()) {
+                if (this.recurrence) {
+                    do {
+                        this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
+                        console.log(this.schedule)
+                        console.log(this.nextExecution)
+                    } while (this.nextExecution < new Date())
+                    this.isExpired = false
+                } else {
+                    this.isExpired = true
+                }
             }
+
             if (!this.isExpired) {
                 this.makeAlive(hermes)
             }

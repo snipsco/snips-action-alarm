@@ -38,7 +38,7 @@
             "found_AlarmsSetFor_": "I found {{ number }} alarm{{odd}} set for {{ time }}.",
             "found_AlarmsSetForEvery_": "I found {{ number }} alarm{{odd}} set for each {{ recurrence }}.",
             "found_AlarmsNamed_AndSetFor_": "I found {{ number }} alarm{{odd}} named {{ name }} set for {{ time }}.",
-            "found_AlarmsNamed_AndSetForEvery_": "I found {{ number }} alarm{{odd}} named {{ name }} set for each {{ recurrence }}."
+            "found_AlarmsNamed_AndSetForEvery_": "I found {{ number }} alarm{{odd}} named {{ name }} set for every {{ recurrence }}."
         },
         "list": {
             "alarm_SetFor_": "One is set for {{ time }}.",

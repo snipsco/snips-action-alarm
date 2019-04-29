@@ -25,9 +25,9 @@ export const setAlarmHandler: Handler = async function (msg, flow, _: Hermes, da
 
     if (dateSlot) {
         if (dateSlot.value.kind === 'TimeInterval') {
-            date = getExactDate({ date: dateSlot.value.from, grain: dateSlot.value.grain })
+            date = getExactDate({ date: dateSlot.value.from })
         } else if (dateSlot.value.kind === 'InstantTime') {
-            date = getExactDate({ date: dateSlot.value })
+            date = getExactDate({ date: dateSlot.value.value, grain: dateSlot.value.kind })
         }
     }
 
