@@ -43,14 +43,14 @@ export class Alarm {
     
     constructor(obj: AlarmInit | string, hermes: Hermes) {
         if (typeof obj === 'string') {
-            const loadData: AlarmString = JSON.parse(obj)
+            const data: AlarmString = JSON.parse(obj)
         
-            this.id = loadData.id
-            this.date = new Date(loadData.date)
-            this.recurrence = loadData.recurrence || null
-            this.name = loadData.name
-            this.schedule = loadData.schedule
-            this.isExpired = loadData.isExpired
+            this.id = data.id
+            this.date = new Date(data.date)
+            this.recurrence = data.recurrence || null
+            this.name = data.name
+            this.schedule = data.schedule
+            this.isExpired = data.isExpired
             this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
 
             if (this.nextExecution.getTime() < Date.now()) {

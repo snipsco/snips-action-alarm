@@ -71,6 +71,10 @@
             "weekEnd": "this week-end",
             "nextWeek": "next week",
             "fromTo": "from {{ date_1 }} to {{ date_2 }}"
+        },
+        "recurrence": {
+            "every": "[every] dddd",
+            "daily": "[every day]"
         }
     }
 }

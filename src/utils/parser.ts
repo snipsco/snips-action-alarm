@@ -1,9 +1,9 @@
 import cron from 'node-cron'
-import { InstantTimeSlotValue, slotType, grain } from 'hermes-javascript'
+import { grain } from 'hermes-javascript'
 import { logger } from './logger'
 
 export type DateGrain = {
-    date: Date
+    date: string
     grain?: string
 }
 
@@ -36,11 +36,11 @@ export const getDateRange = (date: Date, grainValue: string): DateRange => {
 /**
  * Convert a incompleted date to a exact time, filling the unclear parts by current time sub-segments
  */
-export const getExactDate = (dateSlot: InstantTimeSlotValue<slotType.instantTime>): Date => {
+export const getExactDate = (dateGrain: DateGrain): Date => {
     const now = new Date(Date.now())
-    let date = new Date(dateSlot.value)
+    let date = new Date(dateGrain.date)
 
-    switch (dateSlot.grain) {
+    switch (dateGrain.grain) {
         case grain.minute: // base: exact at YYYY-MM-DD HH-MM
             return date
         // case 'Hour': // base: the next hour at HH:00

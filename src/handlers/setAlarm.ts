@@ -6,6 +6,7 @@ import { Alarm, AlarmInit } from '../utils/alarm'
 import {
     SLOT_CONFIDENCE_THRESHOLD
 } from '../constants'
+import { getExactDate } from '../utils'
 
 export const setAlarmHandler: Handler = async function (msg, flow, _: Hermes, database: Database, knownSlots: KnownSlots = { depth: 2 }) {
     logger.info('SetAlarm')
@@ -15,7 +16,7 @@ export const setAlarmHandler: Handler = async function (msg, flow, _: Hermes, da
         recurrence
     } = await commonHandler(msg, knownSlots)
 
-    let date: Date
+    let date: Date | undefined
 
     const dateSlot: NluSlot<slotType.instantTime | slotType.timeInterval> | null = message.getSlotsByName(msg, 'datetime', {
         onlyMostConfident: true,
