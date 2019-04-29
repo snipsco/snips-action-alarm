@@ -24,7 +24,6 @@ export type SerializedAlarm = {
  */
 export class Alarm {
     id: string = ''
-
     date: Date = new Date()
     recurrence: string | null = null
     name: string | null = null
@@ -32,8 +31,8 @@ export class Alarm {
     taskAlarm: ScheduledTask | null = null
     taskAlarmBeep: ScheduledTask | null = null
     
-    constructor(hermes: Hermes, date: Date, recurrence?: string, name?: string) {
-        this.id = timestamp('YYYYMMDD-HHmmss-ms')
+    constructor(hermes: Hermes, date: Date, recurrence?: string, name?: string, id?: string) {
+        this.id = id || timestamp('YYYYMMDD-HHmmss-ms')
         this.recurrence = recurrence || null
         this.name = name || null
         this.schedule = getScheduleString(date, this.recurrence)

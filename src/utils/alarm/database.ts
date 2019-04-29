@@ -33,7 +33,8 @@ export class Database {
             this.alarms.push(new Alarm(this.hermes,
                 new Date(data.date),
                 data.recurrence || undefined,
-                data.name
+                data.name,
+                data.id
             ))
         })
     }

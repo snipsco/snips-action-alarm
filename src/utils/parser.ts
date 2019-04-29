@@ -1,6 +1,5 @@
 import cron from 'node-cron'
 import { grain } from 'hermes-javascript'
-import { logger } from './logger'
 
 export type DateGrain = {
     date: string
@@ -85,7 +84,6 @@ export const getExactDate = (dateGrain: DateGrain): Date => {
  *     * * * * * *
  */
 export const getScheduleString = (date: Date, recurrence: string | null): string => {
-    logger.debug('getScheduleString', typeof date)
     const mapper = {
         mondays: '* * Mon',
         tuesdays: '* * Tue',
@@ -109,8 +107,6 @@ export const getScheduleString = (date: Date, recurrence: string | null): string
     } else {
         schedule += `${ date.getDate() } ${ date.getMonth() + 1 } ${ date.getDay() }`
     }
-
-    logger.debug(schedule)
 
     if (!cron.validate(schedule)) {
         throw 'invalidCronScheduleExpression'

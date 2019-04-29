@@ -22,7 +22,8 @@
         "info": {
             "alarm_SetFor": "I set an alarm for {{ time }}.",
             "alarm_SetFor_Name": "I set an alarm named {{ name }} for {{ time }}.",
-            "alarm_SetFor_Every": "I set an alarm for {{ recurrence }}."
+            "alarm_SetFor_Every": "I set an alarm for {{ recurrence }}.",
+            "alarmNamed_SetFor_Every": "I set an alarm named {{ name }} for {{ recurrence }}."
         }
     },
     "getAlarms": {
@@ -45,9 +46,13 @@
         },
         "list": {
             "alarm_SetFor_": "One is set for {{ time }}.",
+            "singleAlarm_SetFor_Name_AndRecurrence": "Its name is {{ name }} and it is set for {{ recurrence }}.",
+            "singleAlarm_SetFor_Name": "Its name is {{ name }} and it is set for {{ time }}.",
             "singleAlarm_SetFor_": "It is set for {{ time }}.",
-            "alarm_SetFor_Name_AndRecurrence": "An alarm named {{ name }} is set for {{ time }} {{ recurrence }}.",
-            "alarm_SetFor_Name": "An alarm named {{ name }} is set for {{ time }}."
+            "singleAlarm_SetFor_Every": "It is set for {{ recurrence }}.",
+            "alarm_SetFor_Name_AndRecurrence": "An alarm named {{ name }} is set for {{ recurrence }}.",
+            "alarm_SetFor_Name": "An alarm named {{ name }} is set for {{ time }}.",
+            "alarm_SetFor_Every": "One is set for {{ recurrence }}."
         }
     },
     "cancelAlarm": {
