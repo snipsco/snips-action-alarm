@@ -37,11 +37,11 @@ export const setAlarmHandler: Handler = async function (msg, flow, _: Hermes, da
 
     logger.info('\tdate: ', date)
     
-    const alarm: Alarm = database.add({
+    const alarm: Alarm = database.add(
         date,
         recurrence,
         name
-    })
+    )
     
     flow.end()
     return translation.setAlarmToSpeech(alarm)

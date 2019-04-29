@@ -1,4 +1,4 @@
-import { Alarm, AlarmInit } from './alarm'
+import { Alarm, SerializedAlarm } from './alarm'
 import { DIR_DB } from '../../constants'
 import { DateRange, logger } from '../../utils'
 import fs from 'fs'
@@ -29,15 +29,18 @@ export class Database {
             const pathAbs = path.resolve(__dirname + DIR_DB, id)
             logger.debug('Reading: ', pathAbs)
 
-            const alarmRawString = fs.readFileSync(pathAbs).toString()
-
-            const alarm = new Alarm(alarmRawString, this.hermes)
-            this.alarms.push(alarm)
+            const data: SerializedAlarm = JSON.parse(fs.readFileSync(pathAbs).toString())
+            this.alarms.push(new Alarm(this.hermes,
+                new Date(data.date),
+                data.recurrence || undefined,
+                data.name
+            ))
         })
     }
 
-    add(alarmInitObj: AlarmInit): Alarm {
-        const alarm = new Alarm(alarmInitObj, this.hermes)
+    add(date: Date, recurrence?: string, name?: string): Alarm {
+        const alarm = new Alarm(this.hermes, date, recurrence, name)
+        alarm.save()
         this.alarms.push(alarm)
         return alarm
     }
@@ -50,12 +53,11 @@ export class Database {
      * @param recurrence 
      * @param isExpired 
      */
-    get(name?: string, range?: DateRange, recurrence?: string, isExpired: boolean = false) {
+    get(name?: string, range?: DateRange, recurrence?: string) {
         return this.alarms.filter(alarm =>
             (!name || alarm.name === name) &&
             (!range || isDateInRange(alarm.date, range)) &&
-            (!recurrence || alarm.recurrence === recurrence) &&
-            (alarm.isExpired === isExpired)
+            (!recurrence || alarm.recurrence === recurrence)
         ).sort((a, b) => {
             return (a.date.getTime() - b.date.getTime())
         })

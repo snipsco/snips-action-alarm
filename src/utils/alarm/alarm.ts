@@ -8,19 +8,12 @@ import { parseExpression } from 'cron-parser'
 import { i18nFactory } from '../../factories'
 import { ALARM_CRON_EXP, DIR_DB } from '../../constants'
 
-export type AlarmInit = {
-    date: Date
-    recurrence?: string
-    name?: string
-}
-
-export type AlarmString = {
+export type SerializedAlarm = {
     id: string
     name: string
     schedule: string
     date: string
     recurrence?: string
-    isExpired: boolean
 }
 
 /**
@@ -36,54 +29,32 @@ export class Alarm {
     recurrence: string | null = null
     name: string | null = null
     schedule: string = ''
-    isExpired: boolean = false
     taskAlarm: ScheduledTask | null = null
     taskAlarmBeep: ScheduledTask | null = null
     
-    constructor(obj: AlarmInit | string, hermes: Hermes) {
-        if (typeof obj === 'string') {
-            const data: AlarmString = JSON.parse(obj)
-        
-            this.id = data.id
-            this.date = new Date(data.date)
-            this.recurrence = data.recurrence || null
-            this.name = data.name
-            this.schedule = data.schedule
+    constructor(hermes: Hermes, date: Date, recurrence?: string, name?: string) {
+        this.id = timestamp('YYYYMMDD-HHmmss-ms')
+        this.recurrence = recurrence || null
+        this.name = name || null
+        this.schedule = getScheduleString(date, this.recurrence)
 
-            if (this.date < new Date()) {
-                if (this.recurrence) {
-                    do {
-                        this.date = new Date(parseExpression(this.schedule).next().toString())
-                    } while (this.date < new Date())
-                    this.isExpired = false
-                } else {
-                    this.isExpired = true
-                }
-            }
+        if (this.recurrence) {
+            this.date = new Date(parseExpression(this.schedule).next().toString())
+        } else {
+            this.date = date
+        }
 
-            if (!this.isExpired) {
-                this.makeAlive(hermes)
-            }
-        } else if (typeof obj === 'object') {
-            this.id = timestamp('YYYYMMDD-HHmmss-ms')
-            this.recurrence = obj.recurrence || null
-            this.name = obj.name || null
-            this.schedule = getScheduleString(obj.date, this.recurrence)
-            this.isExpired = false
-
+        if (this.date < new Date()) {
             if (this.recurrence) {
-                this.date = new Date(parseExpression(this.schedule).next().toString())
+                do {
+                    this.date = new Date(parseExpression(this.schedule).next().toString())
+                } while (this.date < new Date())
             } else {
-                this.date = obj.date
-            }
-    
-            if (this.date.getTime() < Date.now() + 15000) {
                 throw new Error('pastAlarmDatetime')
             }
-    
-            this.makeAlive(hermes)
-            this.save()
         }
+
+        this.makeAlive(hermes)
     }
 
     /**
@@ -94,7 +65,7 @@ export class Alarm {
     makeAlive(hermes: Hermes) {
         const dialogId: string = `snips-assistant:alarm:${this.id}`
 
-        const onAlarmArrive = () => {
+        const onExpiration = () => {
             const i18n = i18nFactory.get()
 
             let message: string = ''
@@ -136,7 +107,7 @@ export class Alarm {
             //flow.notRecognized()
         })
 
-        this.taskAlarmBeep = cron.schedule(ALARM_CRON_EXP, onAlarmArrive, { scheduled: false })
+        this.taskAlarmBeep = cron.schedule(ALARM_CRON_EXP, onExpiration, { scheduled: false })
         this.taskAlarm = cron.schedule(this.schedule, () => {
             if (this.taskAlarmBeep) {
                 this.taskAlarmBeep.start()
@@ -155,8 +126,7 @@ export class Alarm {
             name: this.name,
             schedule: this.schedule,
             date: this.date.toJSON(),
-            recurrence: this.recurrence,
-            isExpired: this.isExpired
+            recurrence: this.recurrence
         })
     }
 
@@ -168,7 +138,7 @@ export class Alarm {
             if (err) {
                 throw new Error(err.message)
             }
-            logger.info(`Saved alarm: ${this.name} - ${this.id}`)
+            logger.info(`Saved alarm: ${this.id}`)
         })
     }
 
@@ -182,7 +152,7 @@ export class Alarm {
             if (err) {
                 throw new Error(err.message)
             }
-            logger.info(`Deleted alarm: ${this.name} - ${this.id}`)
+            logger.info(`Deleted alarm: ${this.id}`)
         })
     }
 
@@ -233,8 +203,6 @@ export class Alarm {
             this.taskAlarmBeep.destroy()
             this.taskAlarmBeep = null
         }
-
-        this.isExpired = true
     }
 
     reschedule(
