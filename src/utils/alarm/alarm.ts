@@ -20,7 +20,6 @@ export type AlarmString = {
     schedule: string
     date: string
     recurrence?: string
-    nextExecution: string
     isExpired: boolean
 }
 
@@ -38,7 +37,6 @@ export class Alarm {
     name: string | null = null
     schedule: string = ''
     isExpired: boolean = false
-    nextExecution: Date = new Date() 
     taskAlarm: ScheduledTask | null = null
     taskAlarmBeep: ScheduledTask | null = null
     
@@ -51,15 +49,12 @@ export class Alarm {
             this.recurrence = data.recurrence || null
             this.name = data.name
             this.schedule = data.schedule
-            this.nextExecution = new Date(data.nextExecution)
 
-            if (this.nextExecution < new Date()) {
+            if (this.date < new Date()) {
                 if (this.recurrence) {
                     do {
-                        this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
-                        console.log(this.schedule)
-                        console.log(this.nextExecution)
-                    } while (this.nextExecution < new Date())
+                        this.date = new Date(parseExpression(this.schedule).next().toString())
+                    } while (this.date < new Date())
                     this.isExpired = false
                 } else {
                     this.isExpired = true
@@ -71,14 +66,18 @@ export class Alarm {
             }
         } else if (typeof obj === 'object') {
             this.id = timestamp('YYYYMMDD-HHmmss-ms')
-            this.date = obj.date
             this.recurrence = obj.recurrence || null
             this.name = obj.name || null
-            this.schedule = getScheduleString(this.date, this.recurrence)
+            this.schedule = getScheduleString(obj.date, this.recurrence)
             this.isExpired = false
-            this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
+
+            if (this.recurrence) {
+                this.date = new Date(parseExpression(this.schedule).next().toString())
+            } else {
+                this.date = obj.date
+            }
     
-            if (this.nextExecution.getTime() < Date.now() + 15000) {
+            if (this.date.getTime() < Date.now() + 15000) {
                 throw new Error('pastAlarmDatetime')
             }
     
@@ -157,7 +156,6 @@ export class Alarm {
             schedule: this.schedule,
             date: this.date.toJSON(),
             recurrence: this.recurrence,
-            nextExecution: this.nextExecution,
             isExpired: this.isExpired
         })
     }
@@ -204,7 +202,7 @@ export class Alarm {
     }
 
     /**
-     * Reset alarm, update nextExecution
+     * Reset alarm, update next execution date
      */
     reset() {
         if (!this.recurrence) {
@@ -217,7 +215,7 @@ export class Alarm {
             throw new Error('noTaskAlarmBeepFound')
         }
         
-        this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
+        this.date = new Date(parseExpression(this.schedule).next().toString())
     }
 
     /**

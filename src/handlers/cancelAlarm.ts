@@ -34,25 +34,30 @@ export const cancelAlarmHandler: Handler = async function (msg, flow, _: Hermes,
 
     const alarms = database.get(name, dateRange, recurrence)
 
-    flow.continue('snips-assistant:Yes', (_, flow) => {
-        alarms.forEach(alarm => {
-            database.deleteById(alarm.id)
+    if (alarms.length > 0) {
+        flow.continue('snips-assistant:Yes', (_, flow) => {
+            alarms.forEach(alarm => {
+                database.deleteById(alarm.id)
+            })
+    
+            flow.end()
+            if (alarms.length === 1) {
+                return i18n('cancelAlarm.successfullyDeletedSingle')
+            } else {
+                return i18n('cancelAlarm.successfullyDeletedAll')
+            }
+        })
+        flow.continue('snips-assistant:No', (_, flow) => {
+            flow.end()
         })
 
-        flow.end()
         if (alarms.length === 1) {
-            return i18n('cancelAlarm.successfullyDeletedSingle')
-        } else {
-            return i18n('cancelAlarm.successfullyDeletedAll')
+            return translation.getAlarmsToSpeech(alarms, name, dateRange, recurrence) + ' ' + i18n('cancelAlarm.confirmationSingle')
         }
-    })
-    flow.continue('snips-assistant:No', (_, flow) => {
-        flow.end()
-    })
-
-    if (alarms.length === 1) {
-        return translation.getAlarmsToSpeech(alarms, name, dateRange, recurrence) + ' ' + i18n('cancelAlarm.confirmationSingle')
-    } else {
         return translation.getAlarmsToSpeech(alarms, name, dateRange, recurrence) + ' ' + i18n('cancelAlarm.confirmationAll')
     }
+
+    return i18n('getAlarms.head.foundAlarms', {
+        number: 0, odd: ''
+    })
 }

@@ -34,15 +34,14 @@ export const setAlarmHandler: Handler = async function (msg, flow, _: Hermes, da
     if (!date) {
         throw new Error('intentNotRecognized')
     }
+
+    logger.info('\tdate: ', date)
     
-    // attributes can be undefined
-    const alarmInitObj: AlarmInit = {
+    const alarm: Alarm = database.add({
         date,
         recurrence,
         name
-    }
-    
-    const alarm: Alarm = database.add(alarmInitObj)
+    })
     
     flow.end()
     return translation.setAlarmToSpeech(alarm)

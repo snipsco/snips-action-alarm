@@ -59,11 +59,20 @@ export const beautify = {
         })
     },
 
-    recurrence: (dateRange: DateRange, recurrence: string): string => {
+    recurrence: (date: Date, recurrence: string): string => {
         const i18n = i18nFactory.get()
         const config = configFactory.get()
         const language = LANGUAGE_MAPPINGS[config.locale]
 
-        return ''
+        if (recurrence === 'daily') {
+            return i18n('moment.recurrence.daily')
+        }
+
+        return moment(date).locale(language).calendar(undefined, {
+            sameDay: i18n('moment.recurrence.every'),
+            nextDay: i18n('moment.recurrence.every'),
+            nextWeek: i18n('moment.recurrence.every'),
+            sameElse: i18n('moment.recurrence.every'),
+        }).replace(' 0', '')
     }
 }

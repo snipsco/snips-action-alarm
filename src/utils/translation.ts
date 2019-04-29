@@ -59,15 +59,6 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
         })
     }
 
-    // "I found <number> alarm(s) set for every <recurrence>."
-    if (!name && !dateRange && recurrence) {
-        return i18n('getAlarms.head.found_AlarmsSetForEvery_', {
-            number: alarms.length,
-            odd: alarms.length > 1 ? 's' : '',
-            recurrence
-        })
-    }
-
     // "I found <number> alarm(s) named <name> and set for <time>."
     if (name && dateRange && !recurrence) {
         return i18n('getAlarms.head.found_AlarmsNamed_AndSetFor_', {
@@ -79,7 +70,7 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
     }
 
     // "I found <number> alarm(s) named <name> and set for <recurrence>."
-    if (name && dateRange && recurrence) {
+    if (name && !dateRange && recurrence) {
         return i18n('getAlarms.head.found_AlarmsNamed_AndSetForEvery_', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
@@ -88,15 +79,32 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
         })
     }
 
-    // "I found <number> alarm(s)."
-    if (!name && !dateRange && !recurrence) {
-        return i18n('getAlarms.head.found_Alarms', {
+    // "I found <number> alarm(s) set for <recurrence> at <time>."
+    if (!name && dateRange && recurrence) {
+        return i18n('getAlarms.head.found_AlarmsSetForEveryAt_', {
             number: alarms.length,
-            odd: alarms.length > 1 ? 's' : ''
+            odd: alarms.length > 1 ? 's' : '',
+            time,
+            recurrence
         })
     }
 
-    return ''
+    // "I found <number> alarm(s) named <name> and set for <recurrence> at <time>."
+    if (name && dateRange && recurrence) {
+        return i18n('getAlarms.head.found_AlarmsNamed_AndSetForEveryAt_', {
+            number: alarms.length,
+            odd: alarms.length > 1 ? 's' : '',
+            name,
+            time,
+            recurrence
+        })
+    }
+
+    // "I found <number> alarm(s)."
+    return i18n('getAlarms.head.found_Alarms', {
+        number: alarms.length,
+        odd: alarms.length > 1 ? 's' : ''
+    })
 }
 
 // "<name> set for <time>."
@@ -177,15 +185,22 @@ export const translation = {
     setAlarmToSpeech(alarm: Alarm): string {
         const i18n = i18nFactory.get()
 
-        if (alarm.name) {
+        if (alarm.name && !alarm.recurrence) {
             return i18n('setAlarm.info.alarm_SetFor_Name', {
                 name: alarm.name,
-                time: beautify.datetime(alarm.nextExecution)
-            })
-        } else {
-            return i18n('setAlarm.info.alarm_SetFor', {
-                time: beautify.datetime(alarm.nextExecution)
+                time: beautify.datetime(alarm.date)
             })
         }
+
+        if (!alarm.name && alarm.recurrence) {
+            return i18n('setAlarm.info.alarm_SetFor_Every', {
+                name: alarm.name,
+                recurrence: beautify.recurrence(alarm.date, alarm.recurrence)
+            })
+        }
+        
+        return i18n('setAlarm.info.alarm_SetFor', {
+            time: beautify.datetime(alarm.date)
+        })
     }
 }

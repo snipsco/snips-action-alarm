@@ -20,8 +20,9 @@
             "nameAndTime": "When should I set this alarm and how should I name it?"
         },
         "info": {
-            "alarm_SetFor": "Okay, I set an alarm for {{ time }}.",
-            "alarm_SetFor_Name": "Okay, an alarm named {{ name }} is set for {{ time }}."
+            "alarm_SetFor": "I set an alarm for {{ time }}.",
+            "alarm_SetFor_Name": "I set an alarm named {{ name }} for {{ time }}.",
+            "alarm_SetFor_Every": "I set an alarm for {{ recurrence }}."
         }
     },
     "getAlarms": {
@@ -36,9 +37,11 @@
             "found_Alarms": "I found {{ number }} alarm{{odd}}.",
             "found_AlarmsNamed_": "I found {{ number }} alarm{{odd}} named {{ name }}.",
             "found_AlarmsSetFor_": "I found {{ number }} alarm{{odd}} set for {{ time }}.",
-            "found_AlarmsSetForEvery_": "I found {{ number }} alarm{{odd}} set for each {{ recurrence }}.",
+            "found_AlarmsSetForEvery_": "I found {{ number }} alarm{{odd}} set for {{ recurrence }}.",
+            "found_AlarmsSetForEveryAt_": "I found {{ number }} alarm{{odd}} set for {{ recurrence }} at {{ time }}.",
             "found_AlarmsNamed_AndSetFor_": "I found {{ number }} alarm{{odd}} named {{ name }} set for {{ time }}.",
-            "found_AlarmsNamed_AndSetForEvery_": "I found {{ number }} alarm{{odd}} named {{ name }} set for every {{ recurrence }}."
+            "found_AlarmsNamed_AndSetForEvery_": "I found {{ number }} alarm{{odd}} named {{ name }} set for {{ recurrence }}.",
+            "found_AlarmsNamed_AndSetForEveryAt_": "I found {{ number }} alarm{{odd}} named {{ name }} set for {{ recurrence }} at {{ time }}."
         },
         "list": {
             "alarm_SetFor_": "One is set for {{ time }}.",
@@ -73,8 +76,8 @@
             "fromTo": "from {{ date_1 }} to {{ date_2 }}"
         },
         "recurrence": {
-            "every": "[every] dddd",
-            "daily": "[every day]"
+            "every": "[every] dddd [at] h m A",
+            "daily": "[every day at] h m A"
         }
     }
 }

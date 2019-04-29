@@ -84,8 +84,8 @@ export const getExactDate = (dateGrain: DateGrain): Date => {
  *     │ │ │ │ │ │
  *     * * * * * *
  */
-export const getScheduleString = (datetime: Date, recurrence: string | null): string => {
-    logger.debug('getScheduleString', typeof datetime)
+export const getScheduleString = (date: Date, recurrence: string | null): string => {
+    logger.debug('getScheduleString', typeof date)
     const mapper = {
         mondays: '* * Mon',
         tuesdays: '* * Tue',
@@ -94,11 +94,11 @@ export const getScheduleString = (datetime: Date, recurrence: string | null): st
         fridays: '* * Fri',
         saturdays: '* * Sat',
         sundays: '* * Sun',
-        weekly: `* * ${ datetime.getDay() }`,
+        weekly: `* * ${ date.getDay() }`,
         daily: '* * *'
     }
 
-    let schedule = `${ datetime.getSeconds() } ${ datetime.getMinutes() } ${ datetime.getHours() } `
+    let schedule = `${ date.getSeconds() } ${ date.getMinutes() } ${ date.getHours() } `
 
     if (recurrence) {
         for (let [key, value] of Object.entries(mapper)) {
@@ -107,7 +107,7 @@ export const getScheduleString = (datetime: Date, recurrence: string | null): st
             }
         }
     } else {
-        schedule += `${ datetime.getDate() } ${ datetime.getMonth() + 1 } ${ datetime.getDay() }`
+        schedule += `${ date.getDate() } ${ date.getMonth() + 1 } ${ date.getDay() }`
     }
 
     logger.debug(schedule)
