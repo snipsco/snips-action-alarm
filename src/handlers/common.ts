@@ -23,7 +23,7 @@ export default async function (msg: IntentMessage, knownSlots: KnownSlots) {
         }
     }
 
-    let name: string | undefined, recurrence: string | undefined, date: Date | undefined
+    let name: string | undefined, recurrence: string | undefined
 
     if (!('name' in knownSlots)) {
         const nameSlot: NluSlot<slotType.custom> | null = message.getSlotsByName(msg, 'alarm_name', {

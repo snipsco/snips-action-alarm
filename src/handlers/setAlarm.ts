@@ -2,7 +2,7 @@ import { logger, translation, message, Database } from '../utils'
 import { Handler } from './index'
 import { Hermes, NluSlot, slotType } from 'hermes-javascript'
 import commonHandler, { KnownSlots } from './common'
-import { Alarm, AlarmInit } from '../utils/alarm'
+import { Alarm } from '../utils/alarm'
 import {
     SLOT_CONFIDENCE_THRESHOLD
 } from '../constants'

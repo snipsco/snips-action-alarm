@@ -2,7 +2,6 @@ import { translation, logger } from '../utils'
 import { setAlarmHandler } from './setAlarm'
 import { getAlarmHandler } from './getAlarm'
 import { cancelAlarmHandler } from './cancelAlarm'
-import { rescheduleAlarmHandler } from './rescheduleAlarm'
 import { FlowContinuation, IntentMessage, FlowActionReturn } from 'hermes-javascript'
 
 export type Handler = (
@@ -34,6 +33,5 @@ const handlerWrapper = (handler: Handler): Handler => (
 export default {
     setAlarm: handlerWrapper(setAlarmHandler),
     getAlarm: handlerWrapper(getAlarmHandler),
-    cancelAlarm: handlerWrapper(cancelAlarmHandler),
-    rescheduleAlarm: handlerWrapper(rescheduleAlarmHandler)
+    cancelAlarm: handlerWrapper(cancelAlarmHandler)
 }

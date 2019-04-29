@@ -39,10 +39,6 @@ export default function ({
                         action: (msg, flow) => handlers.getAlarm(msg, flow, hermes, database)
                     },
                     {
-                        intent: 'snips-assistant:RescheduleAlarm',
-                        action: (msg, flow) => handlers.rescheduleAlarm(msg, flow, hermes, database)
-                    },
-                    {
                         intent: 'snips-assistant:CancelAlarm',
                         action: (msg, flow) => handlers.cancelAlarm(msg, flow, hermes, database)
                     }

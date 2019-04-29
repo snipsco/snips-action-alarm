@@ -2,7 +2,7 @@ import { configFactory, i18nFactory } from '../factories'
 import { LANGUAGE_MAPPINGS } from '../constants'
 import moment from 'moment'
 import 'moment/locale/fr'
-import { DateRange } from './parser';
+import { DateRange } from './parser'
 
 export const beautify = {
     date: (date: Date): string => {

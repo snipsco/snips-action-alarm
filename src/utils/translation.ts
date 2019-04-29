@@ -4,28 +4,28 @@ import { beautify } from './beautify'
 import { DateRange } from './parser'
 
 function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurrence?: string): string {
+    function getFormat(dateRange?: DateRange): string {
+        if (dateRange) {
+            if (dateRange.grain) {
+                if (dateRange.grain === 'Day') {
+                    return 'date'
+                }
+                if (dateRange.grain === 'Week') {
+                    return 'daterange'
+                }
+                return 'datetime'
+            } else {
+                return 'daterange'
+            }
+        }
+    
+        return ''
+    }
+    
     const i18n = i18nFactory.get()
 
     let time: string = ''
     if (dateRange) {
-        function getFormat(dateRange?: DateRange): string {
-            if (dateRange) {
-                if (dateRange.grain) {
-                    if (dateRange.grain === 'Day') {
-                        return 'date'
-                    }
-                    if (dateRange.grain === 'Week') {
-                        return 'daterange'
-                    }
-                    return 'datetime'
-                } else {
-                    return 'daterange'
-                }
-            }
-        
-            return ''
-        }
-
         switch (getFormat(dateRange)) {
             case 'datetime':
                 time = beautify.datetime(dateRange.min)
@@ -168,8 +168,6 @@ export const translation = {
     },
 
     getAlarmsToSpeech(alarms: Alarm[], name?: string, dateRange?: DateRange, recurrence?: string): string {
-        const i18n = i18nFactory.get()
-
         let tts: string = ''
 
         tts += getHead(alarms, name, dateRange, recurrence)
