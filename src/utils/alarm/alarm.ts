@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import timestamp from 'time-stamp'
 import cron, { ScheduledTask } from 'node-cron'
-import { getScheduleString, logger, message } from '../../utils'
+import { getScheduleString, logger, message, time } from '../../utils'
 import { Hermes, Dialog, NluSlot, slotType } from 'hermes-javascript'
 import { parseExpression } from 'cron-parser'
 import { i18nFactory } from '../../factories'
@@ -90,7 +90,7 @@ export class Alarm extends EventEmitter {
 
                     if (durationSlot) {
                         this.delayed = true
-                        setTimeout(() => { this.delayed = false }, durationSlot.value.minutes * 60 * 1000)
+                        setTimeout(() => { this.delayed = false }, time.getDurationSlotValueInMs(durationSlot))
                     }
 
                     flow.end()

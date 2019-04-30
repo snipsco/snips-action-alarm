@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "cron-parser": "^2.11.0",
+    "dayjs": "^1.8.13",
     "debug": "^4.1.1",
     "hermes-javascript": "^0.3.5",
     "i18next": "^15.0.4",
