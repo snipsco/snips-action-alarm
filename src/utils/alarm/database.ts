@@ -43,6 +43,11 @@ export class Database {
         const alarm = new Alarm(this.hermes, date, recurrence, name)
         alarm.save()
         this.alarms.push(alarm)
+
+        alarm.on('shouldBeDeleted', alarm => {
+            this.deleteById(alarm.id)
+        })
+
         return alarm
     }
 

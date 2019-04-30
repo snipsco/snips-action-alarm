@@ -3,10 +3,11 @@ import path from 'path'
 import timestamp from 'time-stamp'
 import cron, { ScheduledTask } from 'node-cron'
 import { getScheduleString, logger } from '../../utils'
-import { InstantTimeSlotValue, Hermes, slotType, Dialog } from 'hermes-javascript'
+import { Hermes, Dialog } from 'hermes-javascript'
 import { parseExpression } from 'cron-parser'
 import { i18nFactory } from '../../factories'
 import { ALARM_CRON_EXP, DIR_DB } from '../../constants'
+import { EventEmitter } from 'events'
 
 export type SerializedAlarm = {
     id: string
@@ -22,7 +23,7 @@ export type SerializedAlarm = {
  * @exception {pastAlarmDatetime}
  * @exception {noTaskAlarmBeepFound} 
  */
-export class Alarm {
+export class Alarm extends EventEmitter {
     id: string = ''
     date: Date = new Date()
     recurrence: string | null = null
@@ -32,6 +33,8 @@ export class Alarm {
     taskAlarmBeep: ScheduledTask | null = null
     
     constructor(hermes: Hermes, date: Date, recurrence?: string, name?: string, id?: string) {
+        super()
+
         this.id = id || timestamp('YYYYMMDD-HHmmss-ms')
         this.recurrence = recurrence || null
         this.name = name || null
@@ -43,17 +46,22 @@ export class Alarm {
             this.date = date
         }
 
+        let shouldBeDeleted = false
         if (this.date < new Date()) {
             if (this.recurrence) {
                 do {
                     this.date = new Date(parseExpression(this.schedule).next().toString())
                 } while (this.date < new Date())
             } else {
-                throw new Error('pastAlarmDatetime')
+                shouldBeDeleted = true
             }
         }
 
-        this.makeAlive(hermes)
+        if (shouldBeDeleted) {
+            this.emit('shouldBeDeleted', this)
+        } else {
+            this.makeAlive(hermes)
+        }
     }
 
     /**
@@ -62,7 +70,7 @@ export class Alarm {
      * @param hermes 
      */
     makeAlive(hermes: Hermes) {
-        const dialogId: string = `snips-assistant:alarm:${this.id}`
+        const dialogId: string = `snips-assistant:alarm:${ this.id }`
 
         const onExpiration = () => {
             const i18n = i18nFactory.get()
@@ -75,6 +83,20 @@ export class Alarm {
             } else {
                 message += i18n('alarm.info.itsTimeTo')
             }
+
+            hermes.dialog().sessionFlow(dialogId, (_, flow) => {
+                flow.continue('snips-assistant:Stop', (_, flow) => {
+                    this.reset()
+                    flow.end()
+                })
+                flow.continue('snips-assistant:Silence', (_, flow) => {
+                    this.reset()
+                    flow.end()
+                })
+                flow.continue('snips-assistant:AddTime', (_, flow) => {
+                    flow.end()
+                })
+            })
 
             hermes.dialog().publish('start_session', {
                 init: {
@@ -92,19 +114,6 @@ export class Alarm {
                 siteId: 'default'
             })
         }
-
-        hermes.dialog().sessionFlow(dialogId, (_, flow) => {
-            flow.continue('snips-assistant:Stop', (_, flow) => {
-                flow.end()
-            })
-            flow.continue('snips-assistant:Silence', (_, flow) => {
-                flow.end()
-            })
-            flow.continue('snips-assistant:AddTime', (_, flow) => {
-                flow.end()
-            })
-            //flow.notRecognized()
-        })
 
         this.taskAlarmBeep = cron.schedule(ALARM_CRON_EXP, onExpiration, { scheduled: false })
         this.taskAlarm = cron.schedule(this.schedule, () => {
@@ -159,14 +168,13 @@ export class Alarm {
      * Destroy all the task cron, release memory
      */
     destroy() {
-        if (this.taskAlarm) {
-            this.taskAlarm.stop()
-            this.taskAlarm.destroy()
-        }
-
         if (this.taskAlarmBeep) {
             this.taskAlarmBeep.stop()
             this.taskAlarmBeep.destroy()
+        }
+        if (this.taskAlarm) {
+            this.taskAlarm.stop()
+            this.taskAlarm.destroy()
         }
     }
 
@@ -174,42 +182,18 @@ export class Alarm {
      * Reset alarm, update next execution date
      */
     reset() {
-        if (!this.recurrence) {
-            this.setExpired()
-        }
+        if (this.recurrence) {
+            this.date = new Date(parseExpression(this.schedule).next().toString())
 
-        if (this.taskAlarmBeep) {
-            this.taskAlarmBeep.stop()
+            if (this.taskAlarmBeep) {
+                this.taskAlarmBeep.stop()
+                this.taskAlarmBeep.destroy()
+                this.taskAlarmBeep = null
+            } else {
+                throw new Error('noTaskAlarmBeepFound')
+            }
         } else {
-            throw new Error('noTaskAlarmBeepFound')
-        }
-        
-        this.date = new Date(parseExpression(this.schedule).next().toString())
-    }
-
-    /**
-     * Desactivate alarm, keep the copy saved
-     */
-    setExpired() {
-        if (this.taskAlarm) {
-            this.taskAlarm.stop()
-            this.taskAlarm.destroy()
-            this.taskAlarm = null
-        }
-
-        if (this.taskAlarmBeep) {
-            this.taskAlarmBeep.stop()
-            this.taskAlarmBeep.destroy()
-            this.taskAlarmBeep = null
-        }
-    }
-
-    reschedule(
-        newDatetimeSnips?: InstantTimeSlotValue<slotType.instantTime>, 
-        newRecurrence?: string
-    ) {
-        if (!newDatetimeSnips && !newRecurrence) {
-            throw new Error('noRescheduleTimeFound')
+            this.emit('shouldBeDeleted', this)
         }
     }
 }
