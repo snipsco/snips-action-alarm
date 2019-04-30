@@ -36,12 +36,7 @@ export class Database {
                 const date = new Date(data.date)
     
                 if (now < date || data.recurrence) {
-                    this.alarms.push(new Alarm(this.hermes,
-                        date,
-                        data.recurrence || undefined,
-                        data.name,
-                        data.id
-                    ))
+                    this.add(date, data.recurrence || undefined, data.name, data.id)
                 } else {
                     fs.unlink(path.resolve(__dirname + DIR_DB, `${ data.id }.json`), (err) => {
                         if (err) {
@@ -56,8 +51,8 @@ export class Database {
         }
     }
 
-    add(date: Date, recurrence?: string, name?: string): Alarm {
-        const alarm = new Alarm(this.hermes, date, recurrence, name)
+    add(date: Date, recurrence?: string, name?: string, id?: string): Alarm {
+        const alarm = new Alarm(this.hermes, date, recurrence, name, id)
         alarm.save()
         this.alarms.push(alarm)
 

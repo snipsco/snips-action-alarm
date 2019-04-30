@@ -89,28 +89,31 @@ export class Alarm extends EventEmitter {
                     })
 
                     if (durationSlot) {
-                        console.log(durationSlot.rawValue)
+                        this.delayed = true
+                        setTimeout(() => { this.delayed = false }, durationSlot.value.minutes * 60 * 1000)
                     }
 
                     flow.end()
                 })
             })
 
-            hermes.dialog().publish('start_session', {
-                init: {
-                    type: Dialog.enums.initType.action,
-                    text: '[[sound:alarm.beep]] ' + tts,
-                    intentFilter: [
-                        'snips-assistant:Stop',
-                        'snips-assistant:Silence',
-                        'snips-assistant:AddTime'
-                    ],
-                    canBeEnqueued: false,
-                    sendIntentNotRecognized: true
-                },
-                customData: dialogId,
-                siteId: 'default'
-            })
+            if (!this.delayed) {
+                hermes.dialog().publish('start_session', {
+                    init: {
+                        type: Dialog.enums.initType.action,
+                        text: '[[sound:alarm.beep]] ' + tts,
+                        intentFilter: [
+                            'snips-assistant:Stop',
+                            'snips-assistant:Silence',
+                            'snips-assistant:AddTime'
+                        ],
+                        canBeEnqueued: false,
+                        sendIntentNotRecognized: true
+                    },
+                    customData: dialogId,
+                    siteId: 'default'
+                })
+            }
         }
 
         this.taskAlarmBeep = cron.schedule(ALARM_CRON_EXP, onExpiration, { scheduled: false })
@@ -180,17 +183,13 @@ export class Alarm extends EventEmitter {
      * Reset alarm, update next execution date
      */
     reset() {
+        if (this.taskAlarmBeep) {
+            this.taskAlarmBeep.stop()
+        }
+
         if (this.recurrence) {
             this.date = new Date(parseExpression(this.schedule).next().toString())
             this.save()
-
-            if (this.taskAlarmBeep) {
-                this.taskAlarmBeep.stop()
-                this.taskAlarmBeep.destroy()
-                this.taskAlarmBeep = null
-            } else {
-                throw new Error('noTaskAlarmBeepFound')
-            }
         } else {
             this.emit('shouldBeDeleted', this)
         }
