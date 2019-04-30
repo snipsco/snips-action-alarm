@@ -43,65 +43,81 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
 
     // "I found <number> alarm(s) named <name>."
     if (name && !dateRange && !recurrence) {
-        return i18n('getAlarms.head.found_AlarmsNamed_', {
+        return i18n('getAlarms.head.found', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
-            name
+            name,
+            context: 'name'
         })
     }
 
     // "I found <number> alarm(s) set for <time>."
     if (!name && dateRange && !recurrence) {
-        return i18n('getAlarms.head.found_AlarmsSetFor_', {
+        return i18n('getAlarms.head.found', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
-            time
+            time,
+            context: 'time'
+        })
+    }
+
+    // "I found <number> alarm(s) set for <recurrence>."
+    if (!name && !dateRange && recurrence) {
+        return i18n('getAlarms.head.found', {
+            number: alarms.length,
+            odd: alarms.length > 1 ? 's' : '',
+            recurrence,
+            context: 'recurrence'
         })
     }
 
     // "I found <number> alarm(s) named <name> and set for <time>."
     if (name && dateRange && !recurrence) {
-        return i18n('getAlarms.head.found_AlarmsNamed_AndSetFor_', {
+        return i18n('getAlarms.head.found', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
             name,
-            time
+            time,
+            recurrence: 'time_name'
         })
     }
 
     // "I found <number> alarm(s) named <name> and set for <recurrence>."
     if (name && !dateRange && recurrence) {
-        return i18n('getAlarms.head.found_AlarmsNamed_AndSetForEvery_', {
+        return i18n('getAlarms.head.found', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
             name,
-            recurrence
+            recurrence,
+            context: 'recurrence_name'
         })
     }
 
     // "I found <number> alarm(s) set for <recurrence> at <time>."
     if (!name && dateRange && recurrence) {
-        return i18n('getAlarms.head.found_AlarmsSetForEveryAt_', {
+        return i18n('getAlarms.head.found', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
             time,
-            recurrence
+            recurrence,
+            context: 'time_recurrence'
         })
     }
 
     // "I found <number> alarm(s) named <name> and set for <recurrence> at <time>."
     if (name && dateRange && recurrence) {
-        return i18n('getAlarms.head.found_AlarmsNamed_AndSetForEveryAt_', {
+        return i18n('getAlarms.head.found', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
             name,
             time,
-            recurrence
+            recurrence,
+            context: 'time_recurrence_name'
         })
     }
 
     // "I found <number> alarm(s)."
-    return i18n('getAlarms.head.found_Alarms', {
+    return i18n('getAlarms.head.found', {
         number: alarms.length,
         odd: alarms.length > 1 ? 's' : ''
     })
@@ -118,44 +134,51 @@ function getList(alarms: Alarm[], dateRange?: DateRange): string {
         const alarm = alarms[0]
 
         if (alarm.name && alarm.recurrence) {
-            return i18n('getAlarms.list.singleAlarm_SetFor_Name_AndRecurrence', {
+            return i18n('getAlarms.list.singleAlarm', {
                 name: alarm.name,
-                recurrence: beautify.recurrence(alarm.date, alarm.recurrence)
+                recurrence: beautify.recurrence(alarm.date, alarm.recurrence),
+                context: 'recurrence_name'
             })
         } else if (alarm.name && !alarm.recurrence) {
-            return i18n('getAlarms.list.singleAlarm_SetFor_Name', {
+            return i18n('getAlarms.list.singleAlarm', {
                 name: alarm.name,
-                time: beautifyFct(alarm.date)
+                time: beautifyFct(alarm.date),
+                context: 'name'
             })
         } else if (!alarm.name && alarm.recurrence) {
-            return i18n('getAlarms.list.singleAlarm_SetFor_Every', {
-                recurrence: beautify.recurrence(alarm.date, alarm.recurrence)
+            return i18n('getAlarms.list.singleAlarm', {
+                recurrence: beautify.recurrence(alarm.date, alarm.recurrence),
+                context: 'recurrence'
             })
         }
 
-        return i18n('getAlarms.list.singleAlarm_SetFor_', {
-            time: beautifyFct(alarm.date)
+        return i18n('getAlarms.list.singleAlarm', {
+            time: beautifyFct(alarm.date),
+            context: 'time'
         })
     } else {
         for (let i = 0; i < alarms.length; i++) {
             const alarm = alarms[i]
 
             if (alarm.name && alarm.recurrence) {
-                tts += i18n('getAlarms.list.alarm_SetFor_Name_AndRecurrence', {
+                tts += i18n('getAlarms.list.scheduled', {
                     name: alarm.name,
-                    recurrence: beautify.recurrence(alarm.date, alarm.recurrence)
+                    recurrence: beautify.recurrence(alarm.date, alarm.recurrence),
+                    context: 'recurrence_name'
                 })
             } else if (alarm.name && !alarm.recurrence) {
-                tts += i18n('getAlarms.list.alarm_SetFor_Name', {
+                tts += i18n('getAlarms.list.scheduled', {
                     name: alarm.name,
-                    time: beautifyFct(alarm.date)
+                    time: beautifyFct(alarm.date),
+                    context: 'name'
                 })
             } else if (!alarm.name && alarm.recurrence) {
-                tts += i18n('getAlarms.list.alarm_SetFor_Every', {
-                    recurrence: beautify.recurrence(alarm.date, alarm.recurrence)
+                tts += i18n('getAlarms.list.scheduled', {
+                    recurrence: beautify.recurrence(alarm.date, alarm.recurrence),
+                    context: 'recurrence'
                 })
             } else {
-                tts += i18n('getAlarms.list.alarm_SetFor_', {
+                tts += i18n('getAlarms.list.scheduled', {
                     time: beautifyFct(alarm.date)
                 })
             }
@@ -213,26 +236,29 @@ export const translation = {
         const i18n = i18nFactory.get()
 
         if (alarm.name && !alarm.recurrence) {
-            return i18n('setAlarm.info.alarm_SetFor_Name', {
+            return i18n('setAlarm.scheduled', {
                 name: alarm.name,
-                time: beautify.datetime(alarm.date)
+                time: beautify.datetime(alarm.date),
+                context: 'name'
             })
         }
 
         if (!alarm.name && alarm.recurrence) {
-            return i18n('setAlarm.info.alarm_SetFor_Every', {
-                recurrence: beautify.recurrence(alarm.date, alarm.recurrence)
+            return i18n('setAlarm.info.scheduled', {
+                recurrence: beautify.recurrence(alarm.date, alarm.recurrence),
+                context: 'recurrence'
             })
         }
 
         if (alarm.name && alarm.recurrence) {
-            return i18n('setAlarm.info.alarmNamed_SetFor_Every', {
+            return i18n('setAlarm.info.scheduled', {
                 name: alarm.name,
-                recurrence: beautify.recurrence(alarm.date, alarm.recurrence)
+                recurrence: beautify.recurrence(alarm.date, alarm.recurrence),
+                context: 'name_recurrence'
             })
         }
         
-        return i18n('setAlarm.info.alarm_SetFor', {
+        return i18n('setAlarm.info.scheduled', {
             time: beautify.datetime(alarm.date)
         })
     }

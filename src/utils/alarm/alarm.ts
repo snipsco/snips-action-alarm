@@ -66,11 +66,12 @@ export class Alarm extends EventEmitter {
 
             let tts: string = ''
             if (this.name) {
-                tts += i18n('alarm.info.itsTimeTo_Name', {
-                    name: this.name
+                tts += i18n('alarm.info.expired', {
+                    name: this.name,
+                    context: 'name'
                 })
             } else {
-                tts += i18n('alarm.info.itsTimeTo')
+                tts += i18n('alarm.info.expired')
             }
 
             hermes.dialog().sessionFlow(dialogId, (_, flow) => {

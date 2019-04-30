@@ -57,7 +57,7 @@ export const cancelAlarmHandler: Handler = async function (msg, flow, _: Hermes,
         return translation.getAlarmsToSpeech(alarms, name, dateRange, recurrence) + ' ' + i18n('cancelAlarm.confirmationAll')
     }
 
-    return i18n('getAlarms.head.foundAlarms', {
+    return i18n('getAlarms.head.found', {
         number: 0, odd: ''
     })
 }

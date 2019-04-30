@@ -2,57 +2,45 @@
     "error": {
         "mqtt": "Sorry, there was a communication error with the Snips platform.",
         "config": "Sorry, there was an error with your config file.",
-        "locale": "Sorry, there was an error with your language settings.",
+        "localisation": "Sorry, there was an error with your language settings.",
         "intentNotRecognized": "Sorry, I did not understand your request.",
-        "unspecific": "Oops, something went wrong."
+        "unspecific": "Oops, something went wrong.",
+        "durationTooLong": "Sorry, the maximum snooze time is 1 hour."
     },
     "alarm": {
         "info": {
-            "itsTimeTo": "An alarm is up!",
-            "itsTimeTo_Name": "The alarm named {{ name }} is up!"
+            "expired": "An alarm is up!",
+            "expired_name": "The alarm named {{ name }} is up!"
         }
     },
     "setAlarm": {
-        "ask": {
-            "createAlarm": "Would you like to create one?",
-            "name": "How should I name this alarm?",
-            "time": "When should I set this alarm for?",
-            "nameAndTime": "When should I set this alarm and how should I name it?"
-        },
         "info": {
-            "alarm_SetFor": "I set an alarm for {{ time }}.",
-            "alarm_SetFor_Name": "I set an alarm named {{ name }} for {{ time }}.",
-            "alarm_SetFor_Every": "I set an alarm for {{ recurrence }}.",
-            "alarmNamed_SetFor_Every": "I set an alarm named {{ name }} for {{ recurrence }}."
+            "scheduled": "I set an alarm for {{ time }}.",
+            "scheduled_name": "I set an alarm named {{ name }} for {{ time }}.",
+            "scheduled_recurrence": "I set an alarm for {{ recurrence }}.",
+            "scheduled_name_recurrence": "I set an alarm named {{ name }} for {{ recurrence }}."
         }
     },
     "getAlarms": {
-        "ask": {
-            "ifListRestAlarms": "Would you like to list all the remaining alarms?"
-        },
         "head": {
-            "foundAlarms": "I found {{ number }} alarm{{odd}}.",
-            "foundComingAlarms": "I found {{ number }} coming alarm{{odd}}.",
-            "noAlarmFound": "It seems like you have no alarm set for the moment.",
-            "noSuchAlarmsFound": "It seems like you have no such alarm set for the moment.",
-            "found_Alarms": "I found {{ number }} alarm{{odd}}.",
-            "found_AlarmsNamed_": "I found {{ number }} alarm{{odd}} named {{ name }}.",
-            "found_AlarmsSetFor_": "I found {{ number }} alarm{{odd}} set for {{ time }}.",
-            "found_AlarmsSetForEvery_": "I found {{ number }} alarm{{odd}} set for {{ recurrence }}.",
-            "found_AlarmsSetForEveryAt_": "I found {{ number }} alarm{{odd}} set for {{ recurrence }} at {{ time }}.",
-            "found_AlarmsNamed_AndSetFor_": "I found {{ number }} alarm{{odd}} named {{ name }} set for {{ time }}.",
-            "found_AlarmsNamed_AndSetForEvery_": "I found {{ number }} alarm{{odd}} named {{ name }} set for {{ recurrence }}.",
-            "found_AlarmsNamed_AndSetForEveryAt_": "I found {{ number }} alarm{{odd}} named {{ name }} set for {{ recurrence }} at {{ time }}."
+            "found": "I found {{ number }} alarm{{odd}}.",
+            "found_name": "I found {{ number }} alarm{{odd}} named {{ name }}.",
+            "found_time": "I found {{ number }} alarm{{odd}} set for {{ time }}.",
+            "found_recurrence": "I found {{ number }} alarm{{odd}} set for {{ recurrence }}.",
+            "found_time_recurrence": "I found {{ number }} alarm{{odd}} set for {{ recurrence }} at {{ time }}.",
+            "found_time_name": "I found {{ number }} alarm{{odd}} named {{ name }} set for {{ time }}.",
+            "found_recurrence_name": "I found {{ number }} alarm{{odd}} named {{ name }} set for {{ recurrence }}.",
+            "found_time_recurrence_name": "I found {{ number }} alarm{{odd}} named {{ name }} set for {{ recurrence }} at {{ time }}."
         },
         "list": {
-            "alarm_SetFor_": "One is set for {{ time }}.",
-            "singleAlarm_SetFor_Name_AndRecurrence": "Its name is {{ name }} and it is set for {{ recurrence }}.",
-            "singleAlarm_SetFor_Name": "Its name is {{ name }} and it is set for {{ time }}.",
-            "singleAlarm_SetFor_": "It is set for {{ time }}.",
-            "singleAlarm_SetFor_Every": "It is set for {{ recurrence }}.",
-            "alarm_SetFor_Name_AndRecurrence": "An alarm named {{ name }} is set for {{ recurrence }}.",
-            "alarm_SetFor_Name": "An alarm named {{ name }} is set for {{ time }}.",
-            "alarm_SetFor_Every": "One is set for {{ recurrence }}."
+            "scheduled": "One is set for {{ time }}.",
+            "scheduled_name": "An alarm named {{ name }} is set for {{ time }}.",
+            "scheduled_recurrence": "One is set for {{ recurrence }}.",
+            "scheduled_recurrence_name": "An alarm named {{ name }} is set for {{ recurrence }}.",
+            "singleAlarm_name": "Its name is {{ name }} and it is set for {{ time }}.",
+            "singleAlarm_time": "It is set for {{ time }}.",
+            "singleAlarm_recurrence": "It is set for {{ recurrence }}.",
+            "singleAlarm_recurrence_name": "Its name is {{ name }} and it is set for {{ recurrence }}."
         }
     },
     "cancelAlarm": {
