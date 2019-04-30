@@ -58,8 +58,8 @@
         },
         "time": "h m A",
         "datetime": {
-            "sameDay": "[today] [at] h m A",
-            "nextDay": "[tomorrow] [at] h m A",
+            "sameDay": "[today at] h m A",
+            "nextDay": "[tomorrow at] h m A",
             "nextWeek": "dddd [at] h m A",
             "sameElse": "MMMM D [at] h m A"
         },

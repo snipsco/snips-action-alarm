@@ -1,14 +1,76 @@
 {
     "error": {
-        "mqtt": "Désolé, une erreur s'est produite lors de la communication avec la plateforme Snips",
+        "mqtt": "Désolé, une erreur s'est produite lors de la communication avec la plateforme Snips.",
         "config": "Désolé, une erreur s'est produite avec votre fichier de configuration.",
-        "locale": "Désolé, une erreur s'est produite avec vos paramètres de localisation.",
+        "localisation": "Désolé, une erreur s'est produite avec vos paramètres de localisation.",
         "intentNotRecognized": "Désolé, je n'ai pas compris votre requête.",
-        "APIResponse": "Désolé, une erreur s'est produite avec le service distant.",
-        "APIRequest": "Désolé, le service distant est injoignable.",
-        "unspecific": "Oups, quelque chose s'est mal passé."
+        "unspecific": "Oups, quelque chose s'est mal passé.",
+        "durationTooLong": "Désolé, vous pouvez ajouter 1 heure au maximum."
     },
-    "pokemon": {
-        "info": "Le pokémon {{ name }} pèse {{ weight }} kilos et mesure {{ height }} centimètres."
+    "alarm": {
+        "info": {
+            "expired": "Une alarme s'est déclenchée !",
+            "expired_name": "L'alarme nommée {{ name }} s'est déclenchée !"
+        }
+    },
+    "setAlarm": {
+        "info": {
+            "scheduled": "J'ai programmé une alarme à {{ time }}.",
+            "scheduled_name": "J'ai programmé une alarme nommée {{ name }} à {{ time }}.",
+            "scheduled_recurrence": "J'ai programmé une alarme {{ recurrence }}.",
+            "scheduled_name_recurrence": "J'ai programmé une alarme nommée {{ name }} {{ recurrence }}."
+        }
+    },
+    "getAlarms": {
+        "head": {
+            "found": "J'ai trouvé {{ number }} alarme{{odd}}.",
+            "found_name": "J'ai trouvé {{ number }} alarme{{odd}} nommée{{odd}} {{ name }}.",
+            "found_time": "J'ai trouvé {{ number }} alarme{{odd}} programmée{{odd}} à {{ time }}.",
+            "found_recurrence": "J'ai trouvé {{ number }} alarme{{odd}} programmée{{odd}} {{ recurrence }}.",
+            "found_time_recurrence": "J'ai trouvé {{ number }} alarme{{odd}} programmée{{odd}} {{ recurrence }} à {{ time }}.",
+            "found_time_name": "J'ai trouvé {{ number }} alarme{{odd}} nommée{{odd}} {{ name }} et programmée{{odd}} à {{ time }}.",
+            "found_recurrence_name": "J'ai trouvé {{ number }} alarme{{odd}} nommée{{odd}} {{ name }} et programmée{{odd}} {{ recurrence }}.",
+            "found_time_recurrence_name": "J'ai trouvé {{ number }} alarme{{odd}} nommée{{odd}} {{ name }} et programmée{{odd}} {{ recurrence }} à {{ time }}."
+        },
+        "list": {
+            "scheduled": "Une alarme est programmée à {{ time }}.",
+            "scheduled_name": "Une alarme nommée {{ name }} is set for {{ time }}.",
+            "scheduled_recurrence": "Une alarme est programmée {{ recurrence }}.",
+            "scheduled_recurrence_name": "Une alarme nommée {{ name }} est programmée {{ recurrence }}.",
+            "singleAlarm_name": "Elle est nommée {{ name }} et est programmée à {{ time }}.",
+            "singleAlarm_time": "Elle est programmée à {{ time }}.",
+            "singleAlarm_recurrence": "Elle est programmée {{ recurrence }}.",
+            "singleAlarm_recurrence_name": "Elle est nommée {{ name }} et est programmée {{ recurrence }}."
+        }
+    },
+    "cancelAlarm": {
+        "confirmationSingle": "Êtes-vous sûr de vouloir la supprimer ?",
+        "confirmationAll": "Êtes-vous sûr de vouloir les supprimer ?",
+        "successfullyDeletedSingle": "L'alarme a été supprimée.",
+        "successfullyDeletedAll": "Les alarmes ont été supprimées."
+    },
+    "moment": {
+        "date": {
+            "sameDay": "[aujourd'hui]",
+            "nextDay": "[demain]",
+            "nextWeek": "dddd",
+            "sameElse": "[le] D MMMM"
+        },
+        "time": "H [heures] m",
+        "datetime": {
+            "sameDay": "[aujourd'hui à] H [heures] m",
+            "nextDay": "[demain à] H [heures] m",
+            "nextWeek": "dddd [à] H [heures] m",
+            "sameElse": "[le] D MMMM [à] H [heures] m"
+        },
+        "daterange": {
+            "weekEnd": "ce week-end",
+            "nextWeek": "la semaine prochaine",
+            "fromTo": "du {{ date_1 }} au {{ date_2 }}"
+        },
+        "recurrence": {
+            "every": "[tous les] dddd [à] H [heures] m",
+            "daily": "[tous les jours à] H [heures] m"
+        }
     }
 }
