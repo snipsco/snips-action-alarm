@@ -2,11 +2,11 @@ import fs from 'fs'
 import path from 'path'
 import timestamp from 'time-stamp'
 import cron, { ScheduledTask } from 'node-cron'
-import { getScheduleString, logger } from '../../utils'
-import { Hermes, Dialog } from 'hermes-javascript'
+import { getScheduleString, logger, message } from '../../utils'
+import { Hermes, Dialog, NluSlot, slotType } from 'hermes-javascript'
 import { parseExpression } from 'cron-parser'
 import { i18nFactory } from '../../factories'
-import { ALARM_CRON_EXP, DIR_DB } from '../../constants'
+import { ALARM_CRON_EXP, DIR_DB, SLOT_CONFIDENCE_THRESHOLD } from '../../constants'
 import { EventEmitter } from 'events'
 
 export type SerializedAlarm = {
@@ -31,6 +31,7 @@ export class Alarm extends EventEmitter {
     schedule: string = ''
     taskAlarm: ScheduledTask | null = null
     taskAlarmBeep: ScheduledTask | null = null
+    delayed: boolean = false
     
     constructor(hermes: Hermes, date: Date, recurrence?: string, name?: string, id?: string) {
         super()
@@ -41,27 +42,14 @@ export class Alarm extends EventEmitter {
         this.schedule = getScheduleString(date, this.recurrence)
 
         if (this.recurrence) {
-            this.date = new Date(parseExpression(this.schedule).next().toString())
+            do {
+                this.date = new Date(parseExpression(this.schedule).next().toString())
+            } while (this.date < new Date())
         } else {
             this.date = date
         }
 
-        let shouldBeDeleted = false
-        if (this.date < new Date()) {
-            if (this.recurrence) {
-                do {
-                    this.date = new Date(parseExpression(this.schedule).next().toString())
-                } while (this.date < new Date())
-            } else {
-                shouldBeDeleted = true
-            }
-        }
-
-        if (shouldBeDeleted) {
-            this.emit('shouldBeDeleted', this)
-        } else {
-            this.makeAlive(hermes)
-        }
+        this.makeAlive(hermes)
     }
 
     /**
@@ -71,17 +59,18 @@ export class Alarm extends EventEmitter {
      */
     makeAlive(hermes: Hermes) {
         const dialogId: string = `snips-assistant:alarm:${ this.id }`
+        console.log(dialogId)
 
         const onExpiration = () => {
             const i18n = i18nFactory.get()
 
-            let message: string = ''
+            let tts: string = ''
             if (this.name) {
-                message += i18n('alarm.info.itsTimeTo_Name', {
+                tts += i18n('alarm.info.itsTimeTo_Name', {
                     name: this.name
                 })
             } else {
-                message += i18n('alarm.info.itsTimeTo')
+                tts += i18n('alarm.info.itsTimeTo')
             }
 
             hermes.dialog().sessionFlow(dialogId, (_, flow) => {
@@ -93,7 +82,16 @@ export class Alarm extends EventEmitter {
                     this.reset()
                     flow.end()
                 })
-                flow.continue('snips-assistant:AddTime', (_, flow) => {
+                flow.continue('snips-assistant:AddTime', (msg, flow) => {
+                    const durationSlot: NluSlot<slotType.duration> | null = message.getSlotsByName(msg, 'duration', {
+                        onlyMostConfident: true,
+                        threshold: SLOT_CONFIDENCE_THRESHOLD
+                    })
+
+                    if (durationSlot) {
+                        console.log(durationSlot.rawValue)
+                    }
+
                     flow.end()
                 })
             })
@@ -101,7 +99,7 @@ export class Alarm extends EventEmitter {
             hermes.dialog().publish('start_session', {
                 init: {
                     type: Dialog.enums.initType.action,
-                    text: '[[sound:alarm.beep]] ' + message,
+                    text: '[[sound:alarm.beep]] ' + tts,
                     intentFilter: [
                         'snips-assistant:Stop',
                         'snips-assistant:Silence',
@@ -184,6 +182,7 @@ export class Alarm extends EventEmitter {
     reset() {
         if (this.recurrence) {
             this.date = new Date(parseExpression(this.schedule).next().toString())
+            this.save()
 
             if (this.taskAlarmBeep) {
                 this.taskAlarmBeep.stop()

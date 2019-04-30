@@ -25,18 +25,35 @@ export class Database {
         const savedIds: string[] = fs.readdirSync(path.resolve(__dirname + DIR_DB))
         logger.info(`Found ${savedIds.length} saved alarms!`)
 
-        savedIds.forEach(id => {
-            const pathAbs = path.resolve(__dirname + DIR_DB, id)
-            logger.debug('Reading: ', pathAbs)
-
-            const data: SerializedAlarm = JSON.parse(fs.readFileSync(pathAbs).toString())
-            this.alarms.push(new Alarm(this.hermes,
-                new Date(data.date),
-                data.recurrence || undefined,
-                data.name,
-                data.id
-            ))
-        })
+        try {
+            savedIds.forEach(id => {
+                const pathAbs = path.resolve(__dirname + DIR_DB, id)
+                logger.debug('Reading: ', pathAbs)
+    
+                const data: SerializedAlarm = JSON.parse(fs.readFileSync(pathAbs).toString())
+    
+                const now = new Date()
+                const date = new Date(data.date)
+    
+                if (now < date || data.recurrence) {
+                    this.alarms.push(new Alarm(this.hermes,
+                        date,
+                        data.recurrence || undefined,
+                        data.name,
+                        data.id
+                    ))
+                } else {
+                    fs.unlink(path.resolve(__dirname + DIR_DB, `${ data.id }.json`), (err) => {
+                        if (err) {
+                            throw new Error(err.message)
+                        }
+                        logger.info(`Deleted alarm: ${ data.id }`)
+                    })
+                }
+            })
+        } catch (err) {
+            logger.error(err)
+        }
     }
 
     add(date: Date, recurrence?: string, name?: string): Alarm {

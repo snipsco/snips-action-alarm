@@ -26,7 +26,7 @@ export default function ({
                     wavSound: alarmWav.toString('base64'),
                     wavSoundLen: alarmWav.length
                 })
-
+                
                 const database = new Database(hermes)
 
                 dialog.flows([
@@ -43,6 +43,7 @@ export default function ({
                         action: (msg, flow) => handlers.cancelAlarm(msg, flow, hermes, database)
                     }
                 ])
+
                 resolve(done)
             } catch (error) {
                 // Output initialization errors to stderr and exit
