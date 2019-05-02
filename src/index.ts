@@ -16,6 +16,11 @@ export default function ({
     return new Promise((resolve, reject) => {
         withHermes(async (hermes, done) => {
             try {
+                const db = __dirname + '/../.db'
+                if (!fs.existsSync(db)){
+                    fs.mkdirSync(db)
+                }
+                
                 // Bootstrap config, locale, i18n…
                 await bootstrap(bootstrapOptions)
                 const dialog = hermes.dialog()

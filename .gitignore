@@ -1,6 +1,6 @@
 # Project
 config.ini
-.db_alarms/
+.db/
 
 # Logs
 logs
