@@ -83,7 +83,7 @@ export class Alarm extends EventEmitter {
                     this.reset()
                     flow.end()
                 })
-                flow.continue('snips-assistant:AddTime', (msg, flow) => {
+                flow.continue('snips-assistant:ElicitSnooze', (msg, flow) => {
                     const durationSlot: NluSlot<slotType.duration> | null = message.getSlotsByName(msg, 'duration', {
                         onlyMostConfident: true,
                         threshold: SLOT_CONFIDENCE_THRESHOLD
@@ -106,7 +106,7 @@ export class Alarm extends EventEmitter {
                         intentFilter: [
                             'snips-assistant:Stop',
                             'snips-assistant:Silence',
-                            'snips-assistant:AddTime'
+                            'snips-assistant:ElicitSnooze'
                         ],
                         canBeEnqueued: false,
                         sendIntentNotRecognized: true
