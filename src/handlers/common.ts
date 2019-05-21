@@ -1,10 +1,6 @@
-import { IntentMessage, slotType, NluSlot } from 'hermes-javascript'
-import { message, logger } from '../utils'
-import {
-    SLOT_CONFIDENCE_THRESHOLD,
-    INTENT_PROBABILITY_THRESHOLD,
-    ASR_UTTERANCE_CONFIDENCE_THRESHOLD
-} from '../constants'
+import { IntentMessage, slotType, NluSlot } from 'hermes-javascript/types'
+import { message, logger } from 'snips-toolkit'
+import { SLOT_CONFIDENCE_THRESHOLD } from '../constants'
 
 export type KnownSlots = {
     depth: number
@@ -14,15 +10,6 @@ export type KnownSlots = {
 }
 
 export default async function (msg: IntentMessage, knownSlots: KnownSlots) {
-    if (msg.intent) {
-        if (msg.intent.confidenceScore < INTENT_PROBABILITY_THRESHOLD) {
-            throw new Error('intentNotRecognized')
-        }
-        if (message.getAsrConfidence(msg) < ASR_UTTERANCE_CONFIDENCE_THRESHOLD) {
-            throw new Error('intentNotRecognized')
-        }
-    }
-
     let name: string | undefined, recurrence: string | undefined
 
     if (!('name' in knownSlots)) {

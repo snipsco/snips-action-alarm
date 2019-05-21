@@ -1,10 +1,9 @@
-import { logger, translation, message, Database, getDateRange, DateRange } from '../utils'
-import { Handler } from './index'
-import { Hermes, NluSlot, slotType } from 'hermes-javascript'
+import { translation, Database, getDateRange, DateRange } from '../utils'
+import { Handler, logger, message } from 'snips-toolkit'
+import { Hermes } from 'hermes-javascript'
+import { NluSlot, slotType } from 'hermes-javascript/types'
 import commonHandler, { KnownSlots } from './common'
-import {
-    SLOT_CONFIDENCE_THRESHOLD
-} from '../constants'
+import { SLOT_CONFIDENCE_THRESHOLD } from '../constants'
 
 export const getAlarmHandler: Handler = async function (msg, flow, _: Hermes, database: Database, knownSlots: KnownSlots = { depth: 2 }) {
     logger.info('GetAlarm')

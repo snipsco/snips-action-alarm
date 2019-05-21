@@ -1,5 +1,5 @@
 import cron from 'node-cron'
-import { grain } from 'hermes-javascript'
+import { grain } from 'hermes-javascript/types'
 
 export type DateGrain = {
     date: string

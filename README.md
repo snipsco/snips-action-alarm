@@ -28,7 +28,7 @@ npm run dev
 # 1) Lint, transpile and test.
 npm start
 # 2) Run the action.
-node action-alarm.js
+npm run launch
 ```
 
 ## Test & Demo cases
@@ -76,7 +76,7 @@ Cancel the alarms at the given time and recurrence
 
 ## Debug
 
-In the `action-alarm.js` file:
+In the `src/index.ts` file:
 
 ```js
 // Uncomment this line to print everything
@@ -93,5 +93,13 @@ npm run test
 
 **In test mode, i18n output and http calls are mocked.**
 
-- **http**: see `tests/httpMocks/index.ts`
-- **i18n**: see `src/factories/i18nFactory.ts`
+- **http**: mocks are written in `tests/mocks`
+- **i18n**: mocked by `snips-toolkit`, see the [documentation](https://github.com/snipsco/snips-javascript-toolkit#i18n).
+
+## Contributing
+
+Please see the [Contribution Guidelines](https://github.com/snipsco/snips-action-alarm/blob/master/CONTRIBUTING.md).
+
+## Copyright
+
+This library is provided by [Snips](https://snips.ai) as Open Source software. See [LICENSE](https://github.com/snipsco/snips-action-alarm/blob/master/LICENSE) for more information.

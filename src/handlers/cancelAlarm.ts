@@ -1,15 +1,13 @@
-import { logger, translation, message, Database, getDateRange, DateRange } from '../utils'
-import { Handler } from './index'
-import { Hermes, NluSlot, slotType } from 'hermes-javascript'
+import { translation, Database, getDateRange, DateRange } from '../utils'
+import { Handler, logger, message, i18n } from 'snips-toolkit'
+import { Hermes } from 'hermes-javascript'
+import { NluSlot, slotType } from 'hermes-javascript/types'
 import commonHandler, { KnownSlots } from './common'
 import {
     SLOT_CONFIDENCE_THRESHOLD
 } from '../constants'
-import { i18nFactory } from '../factories'
 
 export const cancelAlarmHandler: Handler = async function (msg, flow, _: Hermes, database: Database, knownSlots: KnownSlots = { depth: 2 }) {
-    const i18n = i18nFactory.get()
-
     logger.info('CancelAlarm')
 
     const {
@@ -42,9 +40,9 @@ export const cancelAlarmHandler: Handler = async function (msg, flow, _: Hermes,
     
             flow.end()
             if (alarms.length === 1) {
-                return i18n('cancelAlarm.successfullyDeletedSingle')
+                return i18n.translate('cancelAlarm.successfullyDeletedSingle')
             } else {
-                return i18n('cancelAlarm.successfullyDeletedAll')
+                return i18n.translate('cancelAlarm.successfullyDeletedAll')
             }
         })
         flow.continue('snips-assistant:No', (_, flow) => {
@@ -52,13 +50,13 @@ export const cancelAlarmHandler: Handler = async function (msg, flow, _: Hermes,
         })
 
         if (alarms.length === 1) {
-            return translation.getAlarmsToSpeech(alarms, name, dateRange, recurrence) + ' ' + i18n('cancelAlarm.confirmationSingle')
+            return translation.getAlarmsToSpeech(alarms, name, dateRange, recurrence) + ' ' + i18n.translate('cancelAlarm.confirmationSingle')
         }
-        return translation.getAlarmsToSpeech(alarms, name, dateRange, recurrence) + ' ' + i18n('cancelAlarm.confirmationAll')
+        return translation.getAlarmsToSpeech(alarms, name, dateRange, recurrence) + ' ' + i18n.translate('cancelAlarm.confirmationAll')
     }
 
     flow.end()
-    return i18n('getAlarms.head.found', {
+    return i18n.translate('getAlarms.head.found', {
         number: 0, odd: ''
     })
 }

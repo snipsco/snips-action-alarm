@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { NluSlot, slotType } from 'hermes-javascript'
+import { NluSlot, slotType } from 'hermes-javascript/types'
 
 export type DurationSlot = NluSlot<slotType.duration>
 

@@ -1,4 +1,4 @@
-import { i18nFactory } from '../factories/i18nFactory'
+import { i18n } from 'snips-toolkit'
 import { Alarm } from './alarm'
 import { beautify } from './beautify'
 import { DateRange } from './parser'
@@ -21,8 +21,6 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
     
         return ''
     }
-    
-    const i18n = i18nFactory.get()
 
     let time: string = ''
     if (dateRange) {
@@ -43,7 +41,7 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
 
     // "I found <number> alarm(s) named <name>."
     if (name && !dateRange && !recurrence) {
-        return i18n('getAlarms.head.found', {
+        return i18n.translate('getAlarms.head.found', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
             name,
@@ -53,7 +51,7 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
 
     // "I found <number> alarm(s) set for <time>."
     if (!name && dateRange && !recurrence) {
-        return i18n('getAlarms.head.found', {
+        return i18n.translate('getAlarms.head.found', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
             time,
@@ -63,7 +61,7 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
 
     // "I found <number> alarm(s) set for <recurrence>."
     if (!name && !dateRange && recurrence) {
-        return i18n('getAlarms.head.found', {
+        return i18n.translate('getAlarms.head.found', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
             recurrence,
@@ -73,7 +71,7 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
 
     // "I found <number> alarm(s) named <name> and set for <time>."
     if (name && dateRange && !recurrence) {
-        return i18n('getAlarms.head.found', {
+        return i18n.translate('getAlarms.head.found', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
             name,
@@ -84,7 +82,7 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
 
     // "I found <number> alarm(s) named <name> and set for <recurrence>."
     if (name && !dateRange && recurrence) {
-        return i18n('getAlarms.head.found', {
+        return i18n.translate('getAlarms.head.found', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
             name,
@@ -95,7 +93,7 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
 
     // "I found <number> alarm(s) set for <recurrence> at <time>."
     if (!name && dateRange && recurrence) {
-        return i18n('getAlarms.head.found', {
+        return i18n.translate('getAlarms.head.found', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
             time,
@@ -106,7 +104,7 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
 
     // "I found <number> alarm(s) named <name> and set for <recurrence> at <time>."
     if (name && dateRange && recurrence) {
-        return i18n('getAlarms.head.found', {
+        return i18n.translate('getAlarms.head.found', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
             name,
@@ -117,7 +115,7 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
     }
 
     // "I found <number> alarm(s)."
-    return i18n('getAlarms.head.found', {
+    return i18n.translate('getAlarms.head.found', {
         number: alarms.length,
         odd: alarms.length > 1 ? 's' : ''
     })
@@ -125,7 +123,6 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
 
 // "<name> set for <time>."
 function getList(alarms: Alarm[], dateRange?: DateRange): string {
-    const i18n = i18nFactory.get()
     let tts: string = ''
 
     const beautifyFct = (dateRange && dateRange.grain === 'Day') ? beautify.time : beautify.datetime
@@ -134,25 +131,25 @@ function getList(alarms: Alarm[], dateRange?: DateRange): string {
         const alarm = alarms[0]
 
         if (alarm.name && alarm.recurrence) {
-            return i18n('getAlarms.list.singleAlarm', {
+            return i18n.translate('getAlarms.list.singleAlarm', {
                 name: alarm.name,
                 recurrence: beautify.recurrence(alarm.date, alarm.recurrence),
                 context: 'recurrence_name'
             })
         } else if (alarm.name && !alarm.recurrence) {
-            return i18n('getAlarms.list.singleAlarm', {
+            return i18n.translate('getAlarms.list.singleAlarm', {
                 name: alarm.name,
                 time: beautifyFct(alarm.date),
                 context: 'name'
             })
         } else if (!alarm.name && alarm.recurrence) {
-            return i18n('getAlarms.list.singleAlarm', {
+            return i18n.translate('getAlarms.list.singleAlarm', {
                 recurrence: beautify.recurrence(alarm.date, alarm.recurrence),
                 context: 'recurrence'
             })
         }
 
-        return i18n('getAlarms.list.singleAlarm', {
+        return i18n.translate('getAlarms.list.singleAlarm', {
             time: beautifyFct(alarm.date),
             context: 'time'
         })
@@ -161,24 +158,24 @@ function getList(alarms: Alarm[], dateRange?: DateRange): string {
             const alarm = alarms[i]
 
             if (alarm.name && alarm.recurrence) {
-                tts += i18n('getAlarms.list.scheduled', {
+                tts += i18n.translate('getAlarms.list.scheduled', {
                     name: alarm.name,
                     recurrence: beautify.recurrence(alarm.date, alarm.recurrence),
                     context: 'recurrence_name'
                 })
             } else if (alarm.name && !alarm.recurrence) {
-                tts += i18n('getAlarms.list.scheduled', {
+                tts += i18n.translate('getAlarms.list.scheduled', {
                     name: alarm.name,
                     time: beautifyFct(alarm.date),
                     context: 'name'
                 })
             } else if (!alarm.name && alarm.recurrence) {
-                tts += i18n('getAlarms.list.scheduled', {
+                tts += i18n.translate('getAlarms.list.scheduled', {
                     recurrence: beautify.recurrence(alarm.date, alarm.recurrence),
                     context: 'recurrence'
                 })
             } else {
-                tts += i18n('getAlarms.list.scheduled', {
+                tts += i18n.translate('getAlarms.list.scheduled', {
                     time: beautifyFct(alarm.date)
                 })
             }
@@ -191,34 +188,6 @@ function getList(alarms: Alarm[], dateRange?: DateRange): string {
 }
 
 export const translation = {
-    // Outputs an error message based on the error object, or a default message if not found.
-    errorMessage: async (error: Error): Promise<string> => {
-        let i18n = i18nFactory.get()
-
-        if (!i18n) {
-            await i18nFactory.init()
-            i18n = i18nFactory.get()
-        }
-
-        if (i18n) {
-            return i18n([`error.${error.message}`, 'error.unspecific'])
-        } else {
-            return 'Oops, something went wrong.'
-        }
-    },
-
-    // Takes an array from the i18n and returns a random item.
-    randomTranslation(key: string | string[], opts: {[key: string]: any} = {}): string {
-        const i18n = i18nFactory.get()
-        const possibleValues = i18n(key, { returnObjects: true, ...opts })
-
-        if (typeof possibleValues === 'string')
-            return possibleValues
-        
-        const randomIndex = Math.floor(Math.random() * possibleValues.length)
-        return possibleValues[randomIndex]
-    },
-
     getAlarmsToSpeech(alarms: Alarm[], name?: string, dateRange?: DateRange, recurrence?: string): string {
         let tts: string = ''
 
@@ -233,10 +202,8 @@ export const translation = {
     },
 
     setAlarmToSpeech(alarm: Alarm): string {
-        const i18n = i18nFactory.get()
-
         if (alarm.name && !alarm.recurrence) {
-            return i18n('setAlarm.scheduled', {
+            return i18n.translate('setAlarm.scheduled', {
                 name: alarm.name,
                 time: beautify.datetime(alarm.date),
                 context: 'name'
@@ -244,21 +211,21 @@ export const translation = {
         }
 
         if (!alarm.name && alarm.recurrence) {
-            return i18n('setAlarm.info.scheduled', {
+            return i18n.translate('setAlarm.info.scheduled', {
                 recurrence: beautify.recurrence(alarm.date, alarm.recurrence),
                 context: 'recurrence'
             })
         }
 
         if (alarm.name && alarm.recurrence) {
-            return i18n('setAlarm.info.scheduled', {
+            return i18n.translate('setAlarm.info.scheduled', {
                 name: alarm.name,
                 recurrence: beautify.recurrence(alarm.date, alarm.recurrence),
                 context: 'name_recurrence'
             })
         }
         
-        return i18n('setAlarm.info.scheduled', {
+        return i18n.translate('setAlarm.info.scheduled', {
             time: beautify.datetime(alarm.date)
         })
     }

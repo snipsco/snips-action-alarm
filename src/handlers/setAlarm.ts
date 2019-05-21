@@ -1,6 +1,7 @@
-import { logger, translation, message, Database } from '../utils'
-import handlers, { Handler } from './index'
-import { Hermes, NluSlot, slotType } from 'hermes-javascript'
+import { translation, Database } from '../utils'
+import { Handler, logger, message, i18n } from 'snips-toolkit'
+import { Hermes } from 'hermes-javascript'
+import { NluSlot, slotType } from 'hermes-javascript/types'
 import commonHandler, { KnownSlots } from './common'
 import { Alarm } from '../utils/alarm'
 import {
@@ -8,11 +9,9 @@ import {
     INTENT_FILTER_PROBABILITY_THRESHOLD
 } from '../constants'
 import { getExactDate } from '../utils'
-import { i18nFactory } from '../factories'
+import handlers from './index'
 
 export const setAlarmHandler: Handler = async function (msg, flow, hermes: Hermes, database: Database, knownSlots: KnownSlots = { depth: 2 }) {
-    const i18n = i18nFactory.get()
-
     logger.info('SetAlarm')
 
     const {
@@ -51,7 +50,7 @@ export const setAlarmHandler: Handler = async function (msg, flow, hermes: Herme
             })
         })
 
-        return i18n('setAlarm.ask.time')
+        return i18n.translate('setAlarm.ask.time')
     }
 
     logger.info('\tdate: ', date)

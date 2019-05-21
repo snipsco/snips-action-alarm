@@ -1,6 +1,7 @@
 import { Alarm, SerializedAlarm } from './alarm'
 import { DIR_DB } from '../../constants'
-import { DateRange, logger } from '../../utils'
+import { DateRange } from '../../utils'
+import { logger } from 'snips-toolkit'
 import fs from 'fs'
 import path from 'path'
 import { Hermes } from 'hermes-javascript'

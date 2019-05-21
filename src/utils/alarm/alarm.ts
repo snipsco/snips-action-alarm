@@ -2,10 +2,11 @@ import fs from 'fs'
 import path from 'path'
 import timestamp from 'time-stamp'
 import cron, { ScheduledTask } from 'node-cron'
-import { getScheduleString, logger, message, time } from '../../utils'
-import { Hermes, Dialog, NluSlot, slotType } from 'hermes-javascript'
+import { getScheduleString, time } from '../../utils'
+import { Hermes } from 'hermes-javascript'
+import { NluSlot, slotType, Enums } from 'hermes-javascript/types'
 import { parseExpression } from 'cron-parser'
-import { i18nFactory } from '../../factories'
+import { i18n, logger, message } from 'snips-toolkit'
 import { ALARM_CRON_EXP, DIR_DB, SLOT_CONFIDENCE_THRESHOLD } from '../../constants'
 import { EventEmitter } from 'events'
 
@@ -59,19 +60,16 @@ export class Alarm extends EventEmitter {
      */
     makeAlive(hermes: Hermes) {
         const dialogId: string = `snips-assistant:alarm:${ this.id }`
-        console.log(dialogId)
 
         const onExpiration = () => {
-            const i18n = i18nFactory.get()
-
             let tts: string = ''
             if (this.name) {
-                tts += i18n('alarm.info.expired', {
+                tts += i18n.translate('alarm.info.expired', {
                     name: this.name,
                     context: 'name'
                 })
             } else {
-                tts += i18n('alarm.info.expired')
+                tts += i18n.translate('alarm.info.expired')
             }
 
             hermes.dialog().sessionFlow(dialogId, (_, flow) => {
@@ -97,7 +95,7 @@ export class Alarm extends EventEmitter {
             if (!this.delayed) {
                 hermes.dialog().publish('start_session', {
                     init: {
-                        type: Dialog.enums.initType.action,
+                        type: Enums.initType.action,
                         text: '[[sound:alarm.beep]] ' + tts,
                         intentFilter: [
                             'snips-assistant:StopSilence',
