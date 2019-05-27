@@ -1,12 +1,36 @@
-export function createPokemonIdSlot(id: string) {
+import { Enums, NluSlot } from 'hermes-javascript/types'
+
+type CustomSlot = NluSlot<typeof Enums.slotType.custom>
+type DateSlot = NluSlot<typeof Enums.slotType.instantTime>
+
+export function createDateSlot(datetime: string): DateSlot {
     return {
-        slotName: 'pokemon_id',
-        entity: 'pokemon_id',
+        slotName: 'datetime',
+        entity: 'snips/datetime',
         confidenceScore: 1,
-        rawValue: id,
+        rawValue: datetime,
         value: {
-            kind: 'Custom',
-            value: id
+            kind: Enums.slotType.instantTime,
+            value: datetime,
+            grain: Enums.grain.hour,
+            precision: 'Exact'
+        },
+        range: {
+            start: 0,
+            end: 1
+        }
+    }
+}
+
+export function createNameSlot(name: string): CustomSlot {
+    return {
+        slotName: 'alarm_name',
+        entity: 'alarm_custom',
+        confidenceScore: 1,
+        rawValue: name,
+        value: {
+            kind: Enums.slotType.custom,
+            value: name
         },
         range: {
             start: 0,

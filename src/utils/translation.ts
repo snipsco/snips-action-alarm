@@ -203,7 +203,7 @@ export const translation = {
 
     setAlarmToSpeech(alarm: Alarm): string {
         if (alarm.name && !alarm.recurrence) {
-            return i18n.translate('setAlarm.scheduled', {
+            return i18n.translate('setAlarm.info.scheduled', {
                 name: alarm.name,
                 time: beautify.datetime(alarm.date),
                 context: 'name'
