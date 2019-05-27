@@ -4,7 +4,7 @@
   "description": "Snips action code for the Alarm app",
   "main": "dist/index.js",
   "scripts": {
-    "start": "npm run lint && npm run build && npm run test",
+    "start": "npm run lint && npm run build && npm run test && npm run test:sandbox",
     "build": "snips-toolkit build",
     "dev": "snips-toolkit dev",
     "test": "snips-toolkit test '^.*\\.spec\\.[jt]s$'",
@@ -33,11 +33,8 @@
     "snips-toolkit": "^0.1.3"
   },
   "sandbox": [
-    "assert",
-    "buffer",
     "events",
     "fs",
-    "net",
     "os",
     "path",
     "tty",

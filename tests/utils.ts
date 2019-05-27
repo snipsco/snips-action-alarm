@@ -38,3 +38,20 @@ export function createNameSlot(name: string): CustomSlot {
         }
     }
 }
+
+export function createRecurrenceSlot(recurrence: string): CustomSlot {
+    return {
+        slotName: 'recurrence',
+        entity: 'recurrence_custom',
+        confidenceScore: 1,
+        rawValue: recurrence,
+        value: {
+            kind: Enums.slotType.custom,
+            value: recurrence
+        },
+        range: {
+            start: 0,
+            end: 1
+        }
+    }
+}

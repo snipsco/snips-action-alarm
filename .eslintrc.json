@@ -5,6 +5,9 @@
         "jest/globals": true
     },
     "parser": "@typescript-eslint/parser",
+    "globals": {
+        "SnipsToolkit": "readonly"
+    },
     "plugins": [
         "jest",
         "@typescript-eslint"

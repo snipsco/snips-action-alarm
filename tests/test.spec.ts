@@ -1,7 +1,8 @@
 import { Test } from 'snips-toolkit'
 import {
     createDateSlot,
-    createNameSlot
+    createNameSlot,
+    createRecurrenceSlot
 } from './utils'
 
 const { Session, Tools } = Test
@@ -20,6 +21,7 @@ describe('Alarm app', () => {
 
         const endMsg = await session.end()
         expect(getMessageKey(endMsg)).toBe('setAlarm.info.scheduled')
+
     })
 
     it('should set a new named alarm on tuesday 6 pm', async () => {
@@ -40,22 +42,64 @@ describe('Alarm app', () => {
     it('should get the 2 alarms status', async () => {
         const session = new Session()
         await session.start({
-            intentName: 'snips-assistant:GetAlarms',
+            intentName: 'snips-assistant:GetAlarm',
             input: 'What is the status of my alarms?'
         })
 
         const endMsg = await session.end()
-        expect(getMessageKey(endMsg)).toBe('getAlarms.head.found')
+        expect(endMsg.text && endMsg.text.includes('getAlarms.head.found')).toBeTruthy()
     })
 
     it('should cancel the alarm named wake up', async () => {
         const session = new Session()
         await session.start({
             intentName: 'snips-assistant:CancelAlarm',
-            input: 'Can you cancel the alarm named wake up?'
+            input: 'Can you cancel the alarm named wake up?',
+            slots: [
+                createNameSlot('wake up')
+            ]
+        })
+
+        const confirmationMsg = await session.continue({
+            intentName: 'snips-assistant:Yes',
+            input: 'Yes'
+        })
+        expect(confirmationMsg.intentFilter && confirmationMsg.intentFilter.includes('snips-assistant:Yes')).toBeTruthy()
+ 
+        const endMsg = await session.end()
+        expect(getMessageKey(endMsg)).toBe('cancelAlarm.successfullyDeletedSingle')
+    })
+
+    it('should set a new named alarm every wednesday at 8 pm', async () => {
+        const session = new Session()
+        await session.start({
+            intentName: 'snips-assistant:SetAlarm',
+            input: 'Schedule an alarm named yoga class every wednesday at 8 pm',
+            slots: [
+                createDateSlot('2019-05-28 20:00:00 +00:00'),
+                createNameSlot('wake up'),
+                createRecurrenceSlot('wednesdays')
+            ]
         })
 
         const endMsg = await session.end()
-        expect(getMessageKey(endMsg)).toBe('getAlarms.head.found')
+        expect(getMessageKey(endMsg)).toBe('setAlarm.info.scheduled')
+    })
+
+    it('should cancel all the alarms', async () => {
+        const session = new Session()
+        await session.start({
+            intentName: 'snips-assistant:CancelAlarm',
+            input: 'Can you cancel all the alarms?'
+        })
+
+        const confirmationMsg = await session.continue({
+            intentName: 'snips-assistant:Yes',
+            input: 'Yes'
+        })
+        expect(confirmationMsg.intentFilter && confirmationMsg.intentFilter.includes('snips-assistant:Yes')).toBeTruthy()
+ 
+        const endMsg = await session.end()
+        expect(getMessageKey(endMsg)).toBe('cancelAlarm.successfullyDeletedAll')
     })
 })
