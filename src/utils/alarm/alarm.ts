@@ -7,7 +7,7 @@ import { Hermes } from 'hermes-javascript'
 import { NluSlot, slotType, Enums } from 'hermes-javascript/types'
 import { parseExpression } from 'cron-parser'
 import { i18n, logger, message } from 'snips-toolkit'
-import { ALARM_CRON_EXP, DIR_DB, SLOT_CONFIDENCE_THRESHOLD } from '../../constants'
+import { DB_DIR, ALARM_CRON_EXP, SLOT_CONFIDENCE_THRESHOLD } from '../../constants'
 import { EventEmitter } from 'events'
 
 export type SerializedAlarm = {
@@ -137,7 +137,7 @@ export class Alarm extends EventEmitter {
      * Save alarm info to fs
      */
     save() {
-        fs.writeFile(path.resolve(__dirname + DIR_DB, `${this.id}.json`), this.toString(), 'utf8', (err) => {
+        fs.writeFile(path.resolve(DB_DIR, `${this.id}.json`), this.toString(), 'utf8', (err) => {
             if (err) {
                 throw new Error(err.message)
             }
@@ -151,7 +151,7 @@ export class Alarm extends EventEmitter {
     delete() {
         this.destroy()
         
-        fs.unlink(path.resolve(__dirname + DIR_DB, `${this.id}.json`), (err) => {
+        fs.unlink(path.resolve(DB_DIR, `${this.id}.json`), (err) => {
             if (err) {
                 throw new Error(err.message)
             }

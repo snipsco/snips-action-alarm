@@ -4,11 +4,14 @@ import handlers from './handlers'
 import fs from 'fs'
 import path from 'path'
 import { Database } from './utils'
+import { DB_DIR, ASSETS_DIR } from './constants'
 
 // Enables deep printing of objects.
 process.env.DEBUG_DEPTH = undefined
 
-const alarmWav = fs.readFileSync(path.resolve(__dirname, '../assets/alarm.wav'))
+const alarmWav = fs.readFileSync(
+    path.resolve(ASSETS_DIR, 'alarm.wav')
+)
 
 export default async function ({
     hermes,
@@ -23,9 +26,8 @@ export default async function ({
         // Replace 'error' with '*' to log everything
         logger.enable('error')
 
-        const db = __dirname + '/../.db'
-        if (!fs.existsSync(db)){
-            fs.mkdirSync(db)
+        if (!fs.existsSync(DB_DIR)){
+            fs.mkdirSync(DB_DIR)
         }
 
         config.init()

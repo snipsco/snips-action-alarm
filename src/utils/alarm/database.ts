@@ -1,10 +1,10 @@
 import { Alarm, SerializedAlarm } from './alarm'
-import { DIR_DB } from '../../constants'
 import { DateRange } from '../../utils'
 import { logger } from 'snips-toolkit'
 import fs from 'fs'
 import path from 'path'
 import { Hermes } from 'hermes-javascript'
+import { DB_DIR } from '../../constants'
 
 function isDateInRange(date: Date, dateRange: DateRange) {
     return date >= dateRange.min && date < dateRange.max
@@ -23,12 +23,12 @@ export class Database {
      * Load from file system
      */
     loadSavedAlarms() {
-        const savedIds: string[] = fs.readdirSync(path.resolve(__dirname + DIR_DB))
+        const savedIds: string[] = fs.readdirSync(path.resolve(DB_DIR))
         logger.info(`Found ${savedIds.length} saved alarms!`)
 
         try {
             savedIds.forEach(id => {
-                const pathAbs = path.resolve(__dirname + DIR_DB, id)
+                const pathAbs = path.resolve(DB_DIR, id)
                 logger.debug('Reading: ', pathAbs)
     
                 const data: SerializedAlarm = JSON.parse(fs.readFileSync(pathAbs).toString())
@@ -39,7 +39,7 @@ export class Database {
                 if (now < date || data.recurrence) {
                     this.add(date, data.recurrence || undefined, data.name, data.id)
                 } else {
-                    fs.unlink(path.resolve(__dirname + DIR_DB, `${ data.id }.json`), (err) => {
+                    fs.unlink(path.resolve(DB_DIR, `${ data.id }.json`), (err) => {
                         if (err) {
                             throw new Error(err.message)
                         }

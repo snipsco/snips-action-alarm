@@ -1,3 +1,5 @@
+export const ASSETS_DIR = `${process.cwd()}/assets`
+export const DB_DIR = `${process.cwd()}/.db`
 export const INTENT_PROBABILITY_THRESHOLD = 0.5
 export const INTENT_FILTER_PROBABILITY_THRESHOLD = 0
 export const SLOT_CONFIDENCE_THRESHOLD = 0.5
