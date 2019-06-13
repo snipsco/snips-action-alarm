@@ -19,6 +19,9 @@
             "scheduled_name": "J'ai programmé une alarme nommée {{ name }} {{- time }}.",
             "scheduled_recurrence": "J'ai programmé une alarme {{ recurrence }}.",
             "scheduled_name_recurrence": "J'ai programmé une alarme nommée {{ name }} {{ recurrence }}."
+        },
+        "ask": {
+            "time": "Quand voulez-vous programmer votre alarme ?"
         }
     },
     "getAlarms": {

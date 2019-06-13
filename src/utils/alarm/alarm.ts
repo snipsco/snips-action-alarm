@@ -75,11 +75,7 @@ export class Alarm extends EventEmitter {
             }
 
             hermes.dialog().sessionFlow(dialogId, (_, flow) => {
-                flow.continue('snips-assistant:Stop', (_, flow) => {
-                    this.reset()
-                    flow.end()
-                })
-                flow.continue('snips-assistant:Silence', (_, flow) => {
+                flow.continue('snips-assistant:StopSilence', (_, flow) => {
                     this.reset()
                     flow.end()
                 })
@@ -104,8 +100,7 @@ export class Alarm extends EventEmitter {
                         type: Dialog.enums.initType.action,
                         text: '[[sound:alarm.beep]] ' + tts,
                         intentFilter: [
-                            'snips-assistant:Stop',
-                            'snips-assistant:Silence',
+                            'snips-assistant:StopSilence',
                             'snips-assistant:ElicitSnooze'
                         ],
                         canBeEnqueued: false,

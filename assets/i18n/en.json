@@ -19,6 +19,9 @@
             "scheduled_name": "I set an alarm named {{ name }} for {{ time }}.",
             "scheduled_recurrence": "I set an alarm for {{ recurrence }}.",
             "scheduled_name_recurrence": "I set an alarm named {{ name }} for {{ recurrence }}."
+        },
+        "ask": {
+            "time": "When do you want to schedule your alarm?"
         }
     },
     "getAlarms": {

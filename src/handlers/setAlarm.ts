@@ -1,14 +1,18 @@
 import { logger, translation, message, Database } from '../utils'
-import { Handler } from './index'
+import handlers, { Handler } from './index'
 import { Hermes, NluSlot, slotType } from 'hermes-javascript'
 import commonHandler, { KnownSlots } from './common'
 import { Alarm } from '../utils/alarm'
 import {
-    SLOT_CONFIDENCE_THRESHOLD
+    SLOT_CONFIDENCE_THRESHOLD,
+    INTENT_FILTER_PROBABILITY_THRESHOLD
 } from '../constants'
 import { getExactDate } from '../utils'
+import { i18nFactory } from '../factories'
 
-export const setAlarmHandler: Handler = async function (msg, flow, _: Hermes, database: Database, knownSlots: KnownSlots = { depth: 2 }) {
+export const setAlarmHandler: Handler = async function (msg, flow, hermes: Hermes, database: Database, knownSlots: KnownSlots = { depth: 2 }) {
+    const i18n = i18nFactory.get()
+
     logger.info('SetAlarm')
 
     const {
@@ -32,7 +36,22 @@ export const setAlarmHandler: Handler = async function (msg, flow, _: Hermes, da
     }
 
     if (!date) {
-        throw new Error('intentNotRecognized')
+        flow.continue('snips-assistant:ElicitAlarmTime', (msg, flow) => {
+            if (msg.intent.confidenceScore < INTENT_FILTER_PROBABILITY_THRESHOLD) {
+                throw new Error('intentNotRecognized')
+            }
+
+            const options: { name?: string, recurrence?: string } = {}
+            if (name) options.name = name
+            if (recurrence) options.recurrence = recurrence
+
+            return handlers.setAlarm(msg, flow, hermes, database, {
+                ...options,
+                depth: knownSlots.depth - 1
+            })
+        })
+
+        return i18n('setAlarm.ask.time')
     }
 
     logger.info('\tdate: ', date)
