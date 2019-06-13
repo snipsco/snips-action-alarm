@@ -15,8 +15,8 @@
     },
     "setAlarm": {
         "info": {
-            "scheduled": "J'ai programmé une alarme à {{- time }}.",
-            "scheduled_name": "J'ai programmé une alarme nommée {{ name }} à {{- time }}.",
+            "scheduled": "J'ai programmé une alarme {{- time }}.",
+            "scheduled_name": "J'ai programmé une alarme nommée {{ name }} {{- time }}.",
             "scheduled_recurrence": "J'ai programmé une alarme {{ recurrence }}.",
             "scheduled_name_recurrence": "J'ai programmé une alarme nommée {{ name }} {{ recurrence }}."
         }
@@ -25,20 +25,20 @@
         "head": {
             "found": "J'ai trouvé {{ number }} alarme{{odd}}.",
             "found_name": "J'ai trouvé {{ number }} alarme{{odd}} nommée{{odd}} {{ name }}.",
-            "found_time": "J'ai trouvé {{ number }} alarme{{odd}} programmée{{odd}} à {{- time }}.",
+            "found_time": "J'ai trouvé {{ number }} alarme{{odd}} programmée{{odd}} {{- time }}.",
             "found_recurrence": "J'ai trouvé {{ number }} alarme{{odd}} programmée{{odd}} {{ recurrence }}.",
-            "found_time_recurrence": "J'ai trouvé {{ number }} alarme{{odd}} programmée{{odd}} {{ recurrence }} à {{- time }}.",
-            "found_time_name": "J'ai trouvé {{ number }} alarme{{odd}} nommée{{odd}} {{ name }} et programmée{{odd}} à {{- time }}.",
+            "found_time_recurrence": "J'ai trouvé {{ number }} alarme{{odd}} programmée{{odd}} {{ recurrence }} {{- time }}.",
+            "found_time_name": "J'ai trouvé {{ number }} alarme{{odd}} nommée{{odd}} {{ name }} et programmée{{odd}} {{- time }}.",
             "found_recurrence_name": "J'ai trouvé {{ number }} alarme{{odd}} nommée{{odd}} {{ name }} et programmée{{odd}} {{ recurrence }}.",
-            "found_time_recurrence_name": "J'ai trouvé {{ number }} alarme{{odd}} nommée{{odd}} {{ name }} et programmée{{odd}} {{ recurrence }} à {{- time }}."
+            "found_time_recurrence_name": "J'ai trouvé {{ number }} alarme{{odd}} nommée{{odd}} {{ name }} et programmée{{odd}} {{ recurrence }} {{- time }}."
         },
         "list": {
-            "scheduled": "Une alarme est programmée à {{- time }}.",
-            "scheduled_name": "Une alarme nommée {{ name }} est programmée à {{- time }}.",
+            "scheduled": "Une alarme est programmée {{- time }}.",
+            "scheduled_name": "Une alarme nommée {{ name }} est programmée {{- time }}.",
             "scheduled_recurrence": "Une alarme est programmée {{ recurrence }}.",
             "scheduled_recurrence_name": "Une alarme nommée {{ name }} est programmée {{ recurrence }}.",
-            "singleAlarm_name": "Elle est nommée {{ name }} et est programmée à {{- time }}.",
-            "singleAlarm_time": "Elle est programmée à {{- time }}.",
+            "singleAlarm_name": "Elle est nommée {{ name }} et est programmée {{- time }}.",
+            "singleAlarm_time": "Elle est programmée {{- time }}.",
             "singleAlarm_recurrence": "Elle est programmée {{ recurrence }}.",
             "singleAlarm_recurrence_name": "Elle est nommée {{ name }} et est programmée {{ recurrence }}."
         }
@@ -56,7 +56,7 @@
             "nextWeek": "dddd",
             "sameElse": "[le] D MMMM"
         },
-        "time": "H [heures] m",
+        "time": "[à] H [heures] m",
         "datetime": {
             "sameDay": "[aujourd'hui à] H [heures] m",
             "nextDay": "[demain à] H [heures] m",
