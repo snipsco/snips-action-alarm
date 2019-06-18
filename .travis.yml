@@ -1,0 +1,15 @@
+language: node_js
+	node_js:
+	    - lts/*
+	dist: xenial
+	addons:
+	  apt:
+	    packages:
+	      - mosquitto
+	install:
+	  - cp config.ini.default config.ini
+	  - npm i
+	  - npm start
+	script:
+	  - npm run test
+	  - npm run test:sandbox
