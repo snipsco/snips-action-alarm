@@ -31,7 +31,6 @@
     "dayjs": "^1.8.14",
     "moment": "^2.24.0",
     "node-cron": "^2.0.3",
-    "snips-toolkit-runner": "^1.0.0",
     "time-stamp": "^2.2.0"
   },
   "sandbox": [
