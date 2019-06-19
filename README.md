@@ -2,6 +2,8 @@
 
 Snips action code for the Alarm app
 
+[![Build Status](https://travis-ci.org/snipsco/snips-action-alarm.svg?branch=master)](https://travis-ci.org/snipsco/snips-action-alarm)
+
 ## Setup
 
 ```sh
