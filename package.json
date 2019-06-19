@@ -24,6 +24,7 @@
     "eslint-plugin-jest": "^22.6.4",
     "hermes-javascript": "^0.3.11",
     "snips-toolkit": "^1.0.1",
+    "husky": "^2.4.1",
     "typescript": "^3.5.2"
   },
   "dependencies": {
@@ -32,6 +33,11 @@
     "moment": "^2.24.0",
     "node-cron": "^2.0.3",
     "time-stamp": "^2.2.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint && npm run build"
+    }
   },
   "sandbox": [
     "events",
