@@ -30,12 +30,12 @@ export class Database {
             savedIds.forEach(id => {
                 const pathAbs = path.resolve(DB_DIR, id)
                 logger.debug('Reading: ', pathAbs)
-    
+
                 const data: SerializedAlarm = JSON.parse(fs.readFileSync(pathAbs).toString())
-    
+
                 const now = new Date()
                 const date = new Date(data.date)
-    
+
                 if (now < date || data.recurrence) {
                     this.add(date, data.recurrence || undefined, data.name, data.id)
                 } else {
@@ -66,11 +66,11 @@ export class Database {
 
     /**
      * Get alarms
-     * 
-     * @param name 
-     * @param range 
-     * @param recurrence 
-     * @param isExpired 
+     *
+     * @param name
+     * @param range
+     * @param recurrence
+     * @param isExpired
      */
     get(name?: string, range?: DateRange, recurrence?: string) {
         return this.alarms.filter(alarm =>
@@ -84,8 +84,8 @@ export class Database {
 
     /**
      * Get an alarm by its id
-     * 
-     * @param id 
+     *
+     * @param id
      */
     getById(id: string): Alarm {
         const res = this.alarms.filter(alarm => alarm.id === id)
@@ -97,8 +97,8 @@ export class Database {
 
     /**
      * Delete an existing alarm from database
-     * 
-     * @param id 
+     *
+     * @param id
      */
     deleteById(id: string): boolean {
         const alarm = this.getById(id)

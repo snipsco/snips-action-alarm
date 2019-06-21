@@ -18,7 +18,7 @@ export default async function ({
     done
 }: {
     hermes: Hermes,
-    done: Done 
+    done: Done
 }) {
     try {
         const { name } = require('../package.json')
@@ -41,7 +41,7 @@ export default async function ({
             wavSound: alarmWav.toString('base64'),
             wavSoundLen: alarmWav.length
         })
-        
+
         const database = new Database(hermes)
 
         // Subscribe to the app intents
@@ -58,7 +58,8 @@ export default async function ({
                 intent: 'snips-assistant:CancelAlarm',
                 action: (msg, flow) => handlers.cancelAlarm(msg, flow, hermes, database)
             }
-        ])    } catch (error) {
+        ])
+    } catch (error) {
         // Output initialization errors to stderr and exit
         const message = await i18n.errorMessage(error)
         logger.error(message)

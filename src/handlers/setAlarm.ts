@@ -54,13 +54,13 @@ export const setAlarmHandler: Handler = async function (msg, flow, hermes: Herme
     }
 
     logger.info('\tdate: ', date)
-    
+
     const alarm: Alarm = database.add(
         date,
         recurrence,
         name
     )
-    
+
     flow.end()
     return translation.setAlarmToSpeech(alarm)
 }
