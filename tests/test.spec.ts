@@ -2,11 +2,17 @@ import { Test } from 'snips-toolkit'
 import {
     createDateSlot,
     createNameSlot,
-    createRecurrenceSlot
+    createRecurrenceSlot,
+    sleep
 } from './utils'
 
 const { Session, Tools } = Test
 const { getMessageKey } = Tools
+
+beforeAll(() => {
+    // Wait one second for the action bootstrap
+    return sleep(1000)
+})
 
 describe('Alarm app', () => {
     it('should set a new alarm on monday 6 am', async () => {
@@ -65,7 +71,7 @@ describe('Alarm app', () => {
             input: 'Yes'
         })
         expect(confirmationMsg.intentFilter && confirmationMsg.intentFilter.includes('snips-assistant:Yes')).toBeTruthy()
- 
+
         const endMsg = await session.end()
         expect(getMessageKey(endMsg)).toBe('cancelAlarm.successfullyDeletedSingle')
     })
@@ -98,7 +104,7 @@ describe('Alarm app', () => {
             input: 'Yes'
         })
         expect(confirmationMsg.intentFilter && confirmationMsg.intentFilter.includes('snips-assistant:Yes')).toBeTruthy()
- 
+
         const endMsg = await session.end()
         expect(getMessageKey(endMsg)).toBe('cancelAlarm.successfullyDeletedAll')
     })
