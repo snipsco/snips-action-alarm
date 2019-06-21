@@ -3,10 +3,6 @@ import { Enums, NluSlot } from 'hermes-javascript/types'
 type CustomSlot = NluSlot<typeof Enums.slotType.custom>
 type DateSlot = NluSlot<typeof Enums.slotType.instantTime>
 
-export function sleep(duration: number) {
-    return new Promise(resolve => setTimeout(resolve, duration))
-}
-
 export function createDateSlot(datetime: string): DateSlot {
     return {
         slotName: 'datetime',
