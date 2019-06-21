@@ -3,10 +3,16 @@ import {
     createDateSlot,
     createNameSlot,
     createRecurrenceSlot,
+    sleep
 } from './utils'
 
 const { Session, Tools } = Test
 const { getMessageKey } = Tools
+
+beforeAll(() => {
+    // Wait one second for the action bootstrap
+    return sleep(1000)
+})
 
 describe('Alarm app', () => {
     it('should set a new alarm on monday 6 am', async () => {
