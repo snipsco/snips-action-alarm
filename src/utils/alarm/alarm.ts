@@ -20,9 +20,9 @@ export type SerializedAlarm = {
 
 /**
  * Alarm
- * 
+ *
  * @exception {pastAlarmDatetime}
- * @exception {noTaskAlarmBeepFound} 
+ * @exception {noTaskAlarmBeepFound}
  */
 export class Alarm extends EventEmitter {
     id: string = ''
@@ -33,7 +33,7 @@ export class Alarm extends EventEmitter {
     taskAlarm: ScheduledTask | null = null
     taskAlarmBeep: ScheduledTask | null = null
     delayed: boolean = false
-    
+
     constructor(hermes: Hermes, date: Date, recurrence?: string, name?: string, id?: string) {
         super()
 
@@ -55,8 +55,8 @@ export class Alarm extends EventEmitter {
 
     /**
      * Create and start cron task
-     * 
-     * @param hermes 
+     *
+     * @param hermes
      */
     makeAlive(hermes: Hermes) {
         const dialogId: string = `snips-assistant:alarm:${ this.id }`
@@ -150,7 +150,7 @@ export class Alarm extends EventEmitter {
      */
     delete() {
         this.destroy()
-        
+
         fs.unlink(path.resolve(DB_DIR, `${this.id}.json`), (err) => {
             if (err) {
                 throw new Error(err.message)

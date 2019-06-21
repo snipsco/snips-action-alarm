@@ -10,7 +10,8 @@
     "test": "snips-toolkit test '^.*\\.spec\\.[jt]s$'",
     "test:sandbox": "snips-toolkit test -s '^.*\\.spec\\.[jt]s$'",
     "launch": "snips-toolkit run",
-    "lint": "eslint \"**/*.[jt]s\""
+    "lint": "eslint \"**/*.[jt]s\"",
+    "lint:fix": "eslint --fix \"**/*.[jt]s\""
   },
   "author": "Thomas Bouvier &lt;contact@thomas-bouvier.io&gt;",
   "license": "MIT",

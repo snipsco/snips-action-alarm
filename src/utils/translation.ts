@@ -18,7 +18,7 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
                 return 'daterange'
             }
         }
-    
+
         return ''
     }
 
@@ -179,7 +179,7 @@ function getList(alarms: Alarm[], dateRange?: DateRange): string {
                     time: beautifyFct(alarm.date)
                 })
             }
-            
+
             tts += ' '
         }
     }
@@ -192,7 +192,7 @@ export const translation = {
         let tts: string = ''
 
         tts += getHead(alarms, name, dateRange, recurrence)
-        
+
         if (alarms.length > 0) {
             tts += ' '
             tts += getList(alarms, dateRange)
@@ -224,7 +224,7 @@ export const translation = {
                 context: 'name_recurrence'
             })
         }
-        
+
         return i18n.translate('setAlarm.info.scheduled', {
             time: beautify.datetime(alarm.date)
         })

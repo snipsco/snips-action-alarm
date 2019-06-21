@@ -37,7 +37,7 @@ export const cancelAlarmHandler: Handler = async function (msg, flow, _: Hermes,
             alarms.forEach(alarm => {
                 database.deleteById(alarm.id)
             })
-    
+
             flow.end()
             if (alarms.length === 1) {
                 return i18n.translate('cancelAlarm.successfullyDeletedSingle')
