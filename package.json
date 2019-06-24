@@ -23,6 +23,7 @@
     "eslint": "^5.12.0",
     "eslint-plugin-jest": "^22.6.4",
     "hermes-javascript": "^0.3.11",
+    "snips-toolkit": "^1.0.1",
     "typescript": "^3.5.2"
   },
   "dependencies": {
@@ -30,7 +31,7 @@
     "dayjs": "^1.8.14",
     "moment": "^2.24.0",
     "node-cron": "^2.0.3",
-    "snips-toolkit": "^1.0.1",
+    "snips-toolkit-runner": "^1.0.0",
     "time-stamp": "^2.2.0"
   },
   "sandbox": [
