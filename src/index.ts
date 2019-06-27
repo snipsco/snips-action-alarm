@@ -47,15 +47,15 @@ export default async function ({
         // Subscribe to the app intents
         dialog.flows([
             {
-                intent: 'snips-assistant:SetAlarm',
+                intent: `${ config.get().assistantPrefix }:SetAlarm`,
                 action: (msg, flow) => handlers.setAlarm(msg, flow, hermes, database)
             },
             {
-                intent: 'snips-assistant:GetAlarm',
+                intent: `${ config.get().assistantPrefix }:GetAlarm`,
                 action: (msg, flow) => handlers.getAlarm(msg, flow, hermes, database)
             },
             {
-                intent: 'snips-assistant:CancelAlarm',
+                intent: `${ config.get().assistantPrefix }:CancelAlarm`,
                 action: (msg, flow) => handlers.cancelAlarm(msg, flow, hermes, database)
             }
         ])

@@ -6,7 +6,7 @@ import { getScheduleString, time } from '../../utils'
 import { Hermes } from 'hermes-javascript'
 import { NluSlot, slotType, Enums } from 'hermes-javascript/types'
 import { parseExpression } from 'cron-parser'
-import { i18n, logger, message } from 'snips-toolkit'
+import { i18n, logger, message, config } from 'snips-toolkit'
 import { DB_DIR, ALARM_CRON_EXP, SLOT_CONFIDENCE_THRESHOLD } from '../../constants'
 import { EventEmitter } from 'events'
 
@@ -59,7 +59,7 @@ export class Alarm extends EventEmitter {
      * @param hermes
      */
     makeAlive(hermes: Hermes) {
-        const dialogId: string = `snips-assistant:alarm:${ this.id }`
+        const dialogId: string = `${ config.get().assistantPrefix }:alarm:${ this.id }`
 
         const onExpiration = () => {
             let tts: string = ''
@@ -73,11 +73,11 @@ export class Alarm extends EventEmitter {
             }
 
             hermes.dialog().sessionFlow(dialogId, (_, flow) => {
-                flow.continue('snips-assistant:StopSilence', (_, flow) => {
+                flow.continue(`${ config.get().assistantPrefix }:StopSilence`, (_, flow) => {
                     this.reset()
                     flow.end()
                 })
-                flow.continue('snips-assistant:ElicitSnooze', (msg, flow) => {
+                flow.continue(`${ config.get().assistantPrefix }:ElicitSnooze`, (msg, flow) => {
                     const durationSlot: NluSlot<slotType.duration> | null = message.getSlotsByName(msg, 'duration', {
                         onlyMostConfident: true,
                         threshold: SLOT_CONFIDENCE_THRESHOLD
@@ -98,8 +98,8 @@ export class Alarm extends EventEmitter {
                         type: Enums.initType.action,
                         text: '[[sound:alarm.beep]] ' + tts,
                         intentFilter: [
-                            'snips-assistant:StopSilence',
-                            'snips-assistant:ElicitSnooze'
+                            `${ config.get().assistantPrefix }:StopSilence`,
+                            `${ config.get().assistantPrefix }:ElicitSnooze`
                         ],
                         canBeEnqueued: false,
                         sendIntentNotRecognized: true

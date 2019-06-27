@@ -2,3 +2,4 @@
 locale=en
 
 [secret]
+assistant_prefix=snips-assistant

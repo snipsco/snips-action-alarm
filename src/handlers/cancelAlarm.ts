@@ -1,5 +1,5 @@
 import { translation, Database, getDateRange, DateRange } from '../utils'
-import { Handler, logger, message, i18n } from 'snips-toolkit'
+import { Handler, logger, message, i18n, config } from 'snips-toolkit'
 import { Hermes } from 'hermes-javascript'
 import { NluSlot, slotType } from 'hermes-javascript/types'
 import commonHandler, { KnownSlots } from './common'
@@ -33,7 +33,7 @@ export const cancelAlarmHandler: Handler = async function (msg, flow, _: Hermes,
     const alarms = database.get(name, dateRange, recurrence)
 
     if (alarms.length > 0) {
-        flow.continue('snips-assistant:Yes', (_, flow) => {
+        flow.continue(`${ config.get().assistantPrefix }:Yes`, (_, flow) => {
             alarms.forEach(alarm => {
                 database.deleteById(alarm.id)
             })
@@ -45,7 +45,7 @@ export const cancelAlarmHandler: Handler = async function (msg, flow, _: Hermes,
                 return i18n.translate('cancelAlarm.successfullyDeletedAll')
             }
         })
-        flow.continue('snips-assistant:No', (_, flow) => {
+        flow.continue(`${ config.get().assistantPrefix }:No`, (_, flow) => {
             flow.end()
         })
 

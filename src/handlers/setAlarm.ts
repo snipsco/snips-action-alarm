@@ -1,5 +1,5 @@
 import { translation, Database } from '../utils'
-import { Handler, logger, message, i18n } from 'snips-toolkit'
+import { Handler, logger, message, i18n, config } from 'snips-toolkit'
 import { Hermes } from 'hermes-javascript'
 import { NluSlot, slotType } from 'hermes-javascript/types'
 import commonHandler, { KnownSlots } from './common'
@@ -35,7 +35,7 @@ export const setAlarmHandler: Handler = async function (msg, flow, hermes: Herme
     }
 
     if (!date) {
-        flow.continue('snips-assistant:ElicitAlarmTime', (msg, flow) => {
+        flow.continue(`${ config.get().assistantPrefix }:ElicitAlarmTime`, (msg, flow) => {
             if (msg.intent.confidenceScore < INTENT_FILTER_PROBABILITY_THRESHOLD) {
                 throw new Error('intentNotRecognized')
             }
