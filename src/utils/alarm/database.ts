@@ -70,7 +70,6 @@ export class Database {
      * @param name
      * @param range
      * @param recurrence
-     * @param isExpired
      */
     get(name?: string, range?: DateRange, recurrence?: string) {
         return this.alarms.filter(alarm =>

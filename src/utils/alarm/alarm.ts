@@ -7,7 +7,7 @@ import { Hermes } from 'hermes-javascript'
 import { NluSlot, slotType, Enums } from 'hermes-javascript/types'
 import { parseExpression } from 'cron-parser'
 import { i18n, logger, message, config } from 'snips-toolkit'
-import { DB_DIR, ALARM_CRON_EXP, SLOT_CONFIDENCE_THRESHOLD } from '../../constants'
+import { DB_DIR, ALARM_CRON_EXP, SLOT_CONFIDENCE_THRESHOLD, MAX_REPEAT } from '../../constants'
 import { EventEmitter } from 'events'
 
 export type SerializedAlarm = {
@@ -33,6 +33,8 @@ export class Alarm extends EventEmitter {
     taskAlarm: ScheduledTask | null = null
     taskAlarmBeep: ScheduledTask | null = null
     delayed: boolean = false
+
+    repeat: number = 0
 
     constructor(hermes: Hermes, date: Date, recurrence?: string, name?: string, id?: string) {
         super()
@@ -63,6 +65,14 @@ export class Alarm extends EventEmitter {
 
         const onExpiration = () => {
             let tts: string = ''
+
+            if (this.repeat < MAX_REPEAT) {
+                this.repeat++
+            } else {
+                this.reset()
+                return
+            }
+
             if (this.name) {
                 tts += i18n.translate('alarm.info.expired', {
                     name: this.name,
@@ -101,7 +111,7 @@ export class Alarm extends EventEmitter {
                             `${ config.get().assistantPrefix }:StopSilence`,
                             `${ config.get().assistantPrefix }:ElicitSnooze`
                         ],
-                        canBeEnqueued: false,
+                        canBeEnqueued: true,
                         sendIntentNotRecognized: true
                     },
                     customData: dialogId,
@@ -160,7 +170,7 @@ export class Alarm extends EventEmitter {
     }
 
     /**
-     * Destroy all the task cron, release memory
+     * Destroy all the cron tasks, releasing memory
      */
     destroy() {
         if (this.taskAlarmBeep) {

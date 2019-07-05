@@ -33,7 +33,8 @@ export const getDateRange = (date: Date, grainValue: string): DateRange => {
 }
 
 /**
- * Convert a incompleted date to a exact time, filling the unclear parts by current time sub-segments
+ * Convert an incomple date to an exact time,
+ * filling the unclear parts by current time sub-segments
  */
 export const getExactDate = (dateGrain: DateGrain): Date => {
     const now = new Date(Date.now())
