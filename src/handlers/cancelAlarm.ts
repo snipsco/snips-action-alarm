@@ -1,13 +1,10 @@
 import { translation, Database, getDateRange, DateRange } from '../utils'
 import { Handler, logger, message, i18n, config } from 'snips-toolkit'
-import { Hermes } from 'hermes-javascript'
 import { NluSlot, slotType } from 'hermes-javascript/types'
 import commonHandler, { KnownSlots } from './common'
-import {
-    SLOT_CONFIDENCE_THRESHOLD
-} from '../constants'
+import { SLOT_CONFIDENCE_THRESHOLD } from '../constants'
 
-export const cancelAlarmHandler: Handler = async function (msg, flow, _: Hermes, database: Database, knownSlots: KnownSlots = { depth: 2 }) {
+export const cancelAlarmHandler: Handler = async function (msg, flow, database: Database, knownSlots: KnownSlots = { depth: 2 }) {
     logger.info('CancelAlarm')
 
     const {

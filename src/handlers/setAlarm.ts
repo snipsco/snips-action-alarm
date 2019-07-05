@@ -1,6 +1,5 @@
 import { translation, Database } from '../utils'
 import { Handler, logger, message, i18n, config } from 'snips-toolkit'
-import { Hermes } from 'hermes-javascript'
 import { NluSlot, slotType } from 'hermes-javascript/types'
 import commonHandler, { KnownSlots } from './common'
 import { Alarm } from '../utils/alarm'
@@ -11,8 +10,12 @@ import {
 import { getExactDate } from '../utils'
 import handlers from './index'
 
-export const setAlarmHandler: Handler = async function (msg, flow, hermes: Hermes, database: Database, knownSlots: KnownSlots = { depth: 2 }) {
+export const setAlarmHandler: Handler = async function (msg, flow, database: Database, knownSlots: KnownSlots = { depth: 2 }) {
     logger.info('SetAlarm')
+
+    if (knownSlots.depth === 0) {
+        throw new Error('intentNotRecognized')
+    }
 
     const {
         name,
@@ -44,7 +47,7 @@ export const setAlarmHandler: Handler = async function (msg, flow, hermes: Herme
             if (name) options.name = name
             if (recurrence) options.recurrence = recurrence
 
-            return handlers.setAlarm(msg, flow, hermes, database, {
+            return handlers.setAlarm(msg, flow, database, {
                 ...options,
                 depth: knownSlots.depth - 1
             })

@@ -48,15 +48,15 @@ export default async function ({
         dialog.flows([
             {
                 intent: `${ config.get().assistantPrefix }:SetAlarm`,
-                action: (msg, flow) => handlers.setAlarm(msg, flow, hermes, database)
+                action: (msg, flow) => handlers.setAlarm(msg, flow, database)
             },
             {
                 intent: `${ config.get().assistantPrefix }:GetAlarm`,
-                action: (msg, flow) => handlers.getAlarm(msg, flow, hermes, database)
+                action: (msg, flow) => handlers.getAlarm(msg, flow, database)
             },
             {
                 intent: `${ config.get().assistantPrefix }:CancelAlarm`,
-                action: (msg, flow) => handlers.cancelAlarm(msg, flow, hermes, database)
+                action: (msg, flow) => handlers.cancelAlarm(msg, flow, database)
             }
         ])
     } catch (error) {

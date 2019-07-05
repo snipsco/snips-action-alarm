@@ -25,6 +25,10 @@
         }
     },
     "getAlarms": {
+        "info": {
+            "noAlarmFound": "It seems that you have no alarm set for the moment.",
+            "noSuchAlarmFound": "It seems that you have no such alarm set for the moment."
+        },
         "head": {
             "found": "I found {{ number }} alarm{{odd}}.",
             "found_name": "I found {{ number }} alarm{{odd}} named {{ name }}.",

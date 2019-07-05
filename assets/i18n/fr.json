@@ -25,6 +25,10 @@
         }
     },
     "getAlarms": {
+        "info": {
+            "noAlarmFound": "Il semble que vous n'ayez pas d'alarme programmée.",
+            "noSuchAlarmFound": "Il semble que cette alarme ne soit pas programmée."
+        },
         "head": {
             "found": "J'ai trouvé {{ number }} alarme{{odd}}.",
             "found_name": "J'ai trouvé {{ number }} alarme{{odd}} nommée{{odd}} {{ name }}.",
