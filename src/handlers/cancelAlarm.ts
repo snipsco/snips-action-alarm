@@ -14,17 +14,21 @@ export const cancelAlarmHandler: Handler = async function (msg, flow, database: 
 
     let dateRange: DateRange | undefined
 
-    const dateSlot: NluSlot<slotType.instantTime | slotType.timeInterval> | null = message.getSlotsByName(msg, 'datetime', {
-        onlyMostConfident: true,
-        threshold: SLOT_CONFIDENCE_THRESHOLD
-    })
+    if (!('dateRange' in knownSlots)) {
+        const dateSlot: NluSlot<slotType.instantTime | slotType.timeInterval> | null = message.getSlotsByName(msg, 'datetime', {
+            onlyMostConfident: true,
+            threshold: SLOT_CONFIDENCE_THRESHOLD
+        })
 
-    if (dateSlot) {
-        if (dateSlot.value.kind === slotType.timeInterval) {
-            dateRange = { min: new Date(dateSlot.value.from), max: new Date(dateSlot.value.to) }
-        } else if (dateSlot.value.kind === slotType.instantTime) {
-            dateRange = getDateRange(new Date(dateSlot.value.value), dateSlot.value.grain)
+        if (dateSlot) {
+            if (dateSlot.value.kind === slotType.timeInterval) {
+                dateRange = { min: new Date(dateSlot.value.from), max: new Date(dateSlot.value.to) }
+            } else if (dateSlot.value.kind === slotType.instantTime) {
+                dateRange = getDateRange(new Date(dateSlot.value.value), dateSlot.value.grain)
+            }
         }
+    } else {
+        dateRange = knownSlots.dateRange
     }
 
     const alarms = database.get(name, dateRange, recurrence)

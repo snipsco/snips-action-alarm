@@ -56,6 +56,26 @@ describe('Alarm app', () => {
         expect(endMsg.text && endMsg.text.includes('getAlarms.head.found')).toBeTruthy()
     })
 
+    it('should set a new alarm on wednesday 6 pm with missing date', async () => {
+        const session = new Session()
+        await session.start({
+            intentName: 'snips-assistant:SetAlarm',
+            input: 'Schedule an alarm'
+        })
+
+        const elicitationMsg = await session.continue({
+            intentName: 'snips-assistant:ElicitAlarmTime',
+            input: 'on wednesday at 6 pm',
+            slots: [
+                createDateSlot('2019-05-29 18:00:00 +00:00')
+            ]
+        })
+        expect(getMessageKey(elicitationMsg)).toBe('setAlarm.ask.time')
+
+        const endMsg = await session.end()
+        expect(getMessageKey(endMsg)).toBe('setAlarm.info.scheduled')
+    })
+
     it('should cancel the alarm named wake up', async () => {
         const session = new Session()
         await session.start({
