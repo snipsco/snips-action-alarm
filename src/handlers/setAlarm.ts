@@ -3,10 +3,7 @@ import { Handler, logger, message, i18n, config } from 'snips-toolkit'
 import { NluSlot, slotType } from 'hermes-javascript/types'
 import commonHandler, { KnownSlots } from './common'
 import { Alarm } from '../utils/alarm'
-import {
-    SLOT_CONFIDENCE_THRESHOLD,
-    INTENT_FILTER_PROBABILITY_THRESHOLD
-} from '../constants'
+import { SLOT_CONFIDENCE_THRESHOLD } from '../constants'
 import { getExactDate } from '../utils'
 import handlers from './index'
 
@@ -43,13 +40,16 @@ export const setAlarmHandler: Handler = async function (msg, flow, database: Dat
 
     if (!date) {
         flow.continue(`${ config.get().assistantPrefix }:ElicitAlarmTime`, (msg, flow) => {
+            /*
             if (msg.intent.confidenceScore < INTENT_FILTER_PROBABILITY_THRESHOLD) {
                 throw new Error('intentNotRecognized')
             }
+            */
 
-            const options: { name?: string, recurrence?: string } = {}
+            const options: { name?: string, date?: Date, recurrence?: string } = {}
             if (name) options.name = name
             if (recurrence) options.recurrence = recurrence
+            if (date) options.date = date
 
             return handlers.setAlarm(msg, flow, database, {
                 ...options,

@@ -1,4 +1,5 @@
-import { translation, Database, getDateRange, DateRange } from '../utils'
+import { Database, getDateRange, DateRange } from '../utils'
+import { Alarm } from '../utils/alarm/alarm'
 import { Handler, logger, message, i18n, config } from 'snips-toolkit'
 import { NluSlot, slotType } from 'hermes-javascript/types'
 import commonHandler, { KnownSlots } from './common'
@@ -31,33 +32,54 @@ export const cancelAlarmHandler: Handler = async function (msg, flow, database: 
         dateRange = knownSlots.dateRange
     }
 
-    const alarms = database.get(name, dateRange, recurrence)
+    const alarms: Alarm[] = database.get(name, dateRange, recurrence)
+    const length = alarms.length
 
-    if (alarms.length > 0) {
+    // Cancel all the alarms, need to be confirmed
+    if (length && (!name && !recurrence && !dateRange)) {
         flow.continue(`${ config.get().assistantPrefix }:Yes`, (_, flow) => {
             alarms.forEach(alarm => {
                 database.deleteById(alarm.id)
             })
 
             flow.end()
-            if (alarms.length === 1) {
-                return i18n.translate('cancelAlarm.successfullyDeletedSingle')
+            if (length > 1) {
+                return i18n.translate('cancelAlarm.info.confirmAll', {
+                    number: length
+                })
             } else {
-                return i18n.translate('cancelAlarm.successfullyDeletedAll')
+                return i18n.translate('cancelAlarm.info.confirm')
             }
         })
         flow.continue(`${ config.get().assistantPrefix }:No`, (_, flow) => {
             flow.end()
         })
 
-        if (alarms.length === 1) {
-            return translation.getAlarmsToSpeech(alarms, name, dateRange, recurrence) + ' ' + i18n.translate('cancelAlarm.confirmationSingle')
+        if (length > 1) {
+            return i18n.translate('cancelAlarm.ask.confirmAll', {
+                number: length
+            })
+        } else {
+            return i18n.translate('cancelAlarm.ask.confirm')
         }
-        return translation.getAlarmsToSpeech(alarms, name, dateRange, recurrence) + ' ' + i18n.translate('cancelAlarm.confirmationAll')
+    }
+
+    // Found alarms by using some of the constrains, no need to continue just cancel
+    if (length && (name || recurrence || dateRange)) {
+        alarms.forEach(alarm => {
+            database.deleteById(alarm.id)
+        })
+
+        flow.end()
+        if (length > 1) {
+            return i18n.translate('cancelAlarm.info.confirmAll', {
+                number: length
+            })
+        } else {
+            return i18n.translate('cancelAlarm.info.confirm')
+        }
     }
 
     flow.end()
-    return i18n.translate('getAlarm.head.found', {
-        number: 0, odd: ''
-    })
+    return i18n.translate('getAlarm.info.noAlarmFound')
 }

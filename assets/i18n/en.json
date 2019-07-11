@@ -51,10 +51,14 @@
         }
     },
     "cancelAlarm": {
-        "confirmationSingle": "Are you sure you want to remove it?",
-        "confirmationAll": "Are you sure you want to remove them?",
-        "successfullyDeletedSingle": "Your alarm has been deleted.",
-        "successfullyDeletedAll": "Your alarms have been deleted."
+        "info": {
+            "confirm": "Sure, I cancelled it.",
+            "confirmAll": "Sure, I cancelled them."
+        },
+        "ask": {
+            "confirm": "I found one alarm, are you sure you want to cancel it?",
+            "confirmAll": "I found {{ number }} alarms, are you sure you want to cancel all of them?"
+        }
     },
     "moment": {
         "date": {

@@ -86,14 +86,8 @@ describe('Alarm app', () => {
             ]
         })
 
-        const confirmationMsg = await session.continue({
-            intentName: 'snips-assistant:Yes',
-            input: 'Yes'
-        })
-        expect(confirmationMsg.intentFilter && confirmationMsg.intentFilter.includes('snips-assistant:Yes')).toBeTruthy()
-
         const endMsg = await session.end()
-        expect(getMessageKey(endMsg)).toBe('cancelAlarm.successfullyDeletedSingle')
+        expect(getMessageKey(endMsg)).toBe('cancelAlarm.info.confirm')
     })
 
     it('should set a new named alarm every wednesday at 8 pm', async () => {
@@ -126,6 +120,6 @@ describe('Alarm app', () => {
         expect(confirmationMsg.intentFilter && confirmationMsg.intentFilter.includes('snips-assistant:Yes')).toBeTruthy()
 
         const endMsg = await session.end()
-        expect(getMessageKey(endMsg)).toBe('cancelAlarm.successfullyDeletedAll')
+        expect(getMessageKey(endMsg)).toBe('cancelAlarm.info.confirmAll')
     })
 })
