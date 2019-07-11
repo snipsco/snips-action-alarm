@@ -3,7 +3,7 @@ import { config, i18n, logger } from 'snips-toolkit'
 import handlers from './handlers'
 import fs from 'fs'
 import path from 'path'
-import { Database } from './utils'
+import { Database, beautify } from './utils'
 import { DB_DIR, ASSETS_DIR } from './constants'
 
 // Enables deep printing of objects.
@@ -26,14 +26,9 @@ export default async function ({
         // Replace 'error' with '*' to log everything
         logger.enable('error')
 
-        if (!fs.existsSync(DB_DIR)){
-            fs.mkdirSync(DB_DIR)
-        }
-
         config.init()
+        beautify.init()
         await i18n.init(config.get().locale)
-
-        const dialog = hermes.dialog()
 
         // Publish the alarm sound.
         hermes.tts().publish('register_sound', {
@@ -41,6 +36,12 @@ export default async function ({
             wavSound: alarmWav.toString('base64'),
             wavSoundLen: alarmWav.length
         })
+
+        const dialog = hermes.dialog()
+
+        if (!fs.existsSync(DB_DIR)){
+            fs.mkdirSync(DB_DIR)
+        }
 
         const database = new Database(hermes)
 

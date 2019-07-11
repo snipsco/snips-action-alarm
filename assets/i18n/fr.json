@@ -51,33 +51,16 @@
         }
     },
     "cancelAlarm": {
-        "confirmationSingle": "Êtes-vous sûr de vouloir la supprimer ?",
-        "confirmationAll": "Êtes-vous sûr de vouloir les supprimer ?",
-        "successfullyDeletedSingle": "L'alarme a été supprimée.",
-        "successfullyDeletedAll": "Les alarmes ont été supprimées."
-    },
-    "moment": {
-        "date": {
-            "sameDay": "[aujourd'hui]",
-            "nextDay": "[demain]",
-            "nextWeek": "dddd",
-            "sameElse": "[le] D MMMM"
+        "info": {
+            "confirm": "D'accord, je l'ai supprimée.",
+            "confirmAll": "D'accord, je les ai supprimées."
         },
-        "time": "[à] H [heures] m",
-        "datetime": {
-            "sameDay": "[aujourd'hui à] H [heures] m",
-            "nextDay": "[demain à] H [heures] m",
-            "nextWeek": "dddd [à] H [heures] m",
-            "sameElse": "[le] D MMMM [à] H [heures] m"
-        },
-        "daterange": {
-            "weekEnd": "ce week-end",
-            "nextWeek": "la semaine prochaine",
-            "fromTo": "du {{ date_1 }} au {{ date_2 }}"
-        },
-        "recurrence": {
-            "every": "[tous les] dddd [à] H [heures] m",
-            "daily": "[tous les jours à] H [heures] m"
+        "ask": {
+            "confirm": "J'ai trouvé une alarme, êtes-vous sûr de vouloir la supprimer ?",
+            "confirmAll": "J'ai trouvé {{ number }} alarmes, êtes-vous sûr de vouloir les supprimer ?"
         }
+    },
+    "daterange": {
+        "fromTo": "du {{ date_1 }} au {{ date_2 }}"
     }
 }
