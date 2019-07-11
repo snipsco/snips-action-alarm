@@ -53,7 +53,7 @@ describe('Alarm app', () => {
         })
 
         const endMsg = await session.end()
-        expect(endMsg.text && endMsg.text.includes('getAlarms.head.found')).toBeTruthy()
+        expect(endMsg.text && endMsg.text.includes('getAlarm.head.found')).toBeTruthy()
     })
 
     it('should set a new alarm on wednesday 6 pm with missing date', async () => {

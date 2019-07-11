@@ -24,7 +24,7 @@
             "time": "Quand voulez-vous programmer votre alarme ?"
         }
     },
-    "getAlarms": {
+    "getAlarm": {
         "info": {
             "noAlarmFound": "Il semble que vous n'ayez pas d'alarme programmée.",
             "noSuchAlarmFound": "Il semble que cette alarme ne soit pas programmée."

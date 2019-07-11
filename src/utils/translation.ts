@@ -41,7 +41,7 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
 
     // "I found <number> alarm(s) named <name>."
     if (name && !dateRange && !recurrence) {
-        return i18n.translate('getAlarms.head.found', {
+        return i18n.translate('getAlarm.head.found', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
             name,
@@ -51,7 +51,7 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
 
     // "I found <number> alarm(s) set for <time>."
     if (!name && dateRange && !recurrence) {
-        return i18n.translate('getAlarms.head.found', {
+        return i18n.translate('getAlarm.head.found', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
             time,
@@ -61,7 +61,7 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
 
     // "I found <number> alarm(s) set for <recurrence>."
     if (!name && !dateRange && recurrence) {
-        return i18n.translate('getAlarms.head.found', {
+        return i18n.translate('getAlarm.head.found', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
             recurrence,
@@ -71,7 +71,7 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
 
     // "I found <number> alarm(s) named <name> and set for <time>."
     if (name && dateRange && !recurrence) {
-        return i18n.translate('getAlarms.head.found', {
+        return i18n.translate('getAlarm.head.found', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
             name,
@@ -82,7 +82,7 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
 
     // "I found <number> alarm(s) named <name> and set for <recurrence>."
     if (name && !dateRange && recurrence) {
-        return i18n.translate('getAlarms.head.found', {
+        return i18n.translate('getAlarm.head.found', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
             name,
@@ -93,7 +93,7 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
 
     // "I found <number> alarm(s) set for <recurrence> at <time>."
     if (!name && dateRange && recurrence) {
-        return i18n.translate('getAlarms.head.found', {
+        return i18n.translate('getAlarm.head.found', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
             time,
@@ -104,7 +104,7 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
 
     // "I found <number> alarm(s) named <name> and set for <recurrence> at <time>."
     if (name && dateRange && recurrence) {
-        return i18n.translate('getAlarms.head.found', {
+        return i18n.translate('getAlarm.head.found', {
             number: alarms.length,
             odd: alarms.length > 1 ? 's' : '',
             name,
@@ -115,7 +115,7 @@ function getHead(alarms: Alarm[], name?: string, dateRange?: DateRange, recurren
     }
 
     // "I found <number> alarm(s)."
-    return i18n.translate('getAlarms.head.found', {
+    return i18n.translate('getAlarm.head.found', {
         number: alarms.length,
         odd: alarms.length > 1 ? 's' : ''
     })
@@ -131,25 +131,25 @@ function getList(alarms: Alarm[], dateRange?: DateRange): string {
         const alarm = alarms[0]
 
         if (alarm.name && alarm.recurrence) {
-            return i18n.translate('getAlarms.list.singleAlarm', {
+            return i18n.translate('getAlarm.list.singleAlarm', {
                 name: alarm.name,
                 recurrence: beautify.recurrence(alarm.date, alarm.recurrence),
                 context: 'recurrence_name'
             })
         } else if (alarm.name && !alarm.recurrence) {
-            return i18n.translate('getAlarms.list.singleAlarm', {
+            return i18n.translate('getAlarm.list.singleAlarm', {
                 name: alarm.name,
                 time: beautifyFct(alarm.date),
                 context: 'name'
             })
         } else if (!alarm.name && alarm.recurrence) {
-            return i18n.translate('getAlarms.list.singleAlarm', {
+            return i18n.translate('getAlarm.list.singleAlarm', {
                 recurrence: beautify.recurrence(alarm.date, alarm.recurrence),
                 context: 'recurrence'
             })
         }
 
-        return i18n.translate('getAlarms.list.singleAlarm', {
+        return i18n.translate('getAlarm.list.singleAlarm', {
             time: beautifyFct(alarm.date),
             context: 'time'
         })
@@ -158,24 +158,24 @@ function getList(alarms: Alarm[], dateRange?: DateRange): string {
             const alarm = alarms[i]
 
             if (alarm.name && alarm.recurrence) {
-                tts += i18n.translate('getAlarms.list.scheduled', {
+                tts += i18n.translate('getAlarm.list.scheduled', {
                     name: alarm.name,
                     recurrence: beautify.recurrence(alarm.date, alarm.recurrence),
                     context: 'recurrence_name'
                 })
             } else if (alarm.name && !alarm.recurrence) {
-                tts += i18n.translate('getAlarms.list.scheduled', {
+                tts += i18n.translate('getAlarm.list.scheduled', {
                     name: alarm.name,
                     time: beautifyFct(alarm.date),
                     context: 'name'
                 })
             } else if (!alarm.name && alarm.recurrence) {
-                tts += i18n.translate('getAlarms.list.scheduled', {
+                tts += i18n.translate('getAlarm.list.scheduled', {
                     recurrence: beautify.recurrence(alarm.date, alarm.recurrence),
                     context: 'recurrence'
                 })
             } else {
-                tts += i18n.translate('getAlarms.list.scheduled', {
+                tts += i18n.translate('getAlarm.list.scheduled', {
                     time: beautifyFct(alarm.date)
                 })
             }

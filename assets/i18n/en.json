@@ -24,7 +24,7 @@
             "time": "When do you want to schedule your alarm?"
         }
     },
-    "getAlarms": {
+    "getAlarm": {
         "info": {
             "noAlarmFound": "It seems that you have no alarm set for the moment.",
             "noSuchAlarmFound": "It seems that you have no such alarm set for the moment."

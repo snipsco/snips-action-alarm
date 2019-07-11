@@ -1,5 +1,5 @@
 import { translation, Database, getDateRange, DateRange } from '../utils'
-import { Handler, logger, message } from 'snips-toolkit'
+import { Handler, logger, message, i18n } from 'snips-toolkit'
 import { NluSlot, slotType } from 'hermes-javascript/types'
 import commonHandler, { KnownSlots } from './common'
 import { SLOT_CONFIDENCE_THRESHOLD } from '../constants'
@@ -32,6 +32,12 @@ export const getAlarmHandler: Handler = async function (msg, flow, database: Dat
     }
 
     const alarms = database.get(name, dateRange, recurrence)
+
+    // No alarms, no slots
+    if (!alarms.length && (!name && !recurrence && !dateRange)) {
+        flow.end()
+        return i18n.translate('getAlarm.info.noAlarmFound')
+    }
 
     flow.end()
     return translation.getAlarmsToSpeech(alarms, name, dateRange, recurrence)

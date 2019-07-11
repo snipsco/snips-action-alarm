@@ -57,7 +57,7 @@ export const cancelAlarmHandler: Handler = async function (msg, flow, database: 
     }
 
     flow.end()
-    return i18n.translate('getAlarms.head.found', {
+    return i18n.translate('getAlarm.head.found', {
         number: 0, odd: ''
     })
 }
