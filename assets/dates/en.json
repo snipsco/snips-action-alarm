@@ -4,7 +4,7 @@
             "sameDay": "[today]",
             "nextDay": "[tomorrow]",
             "nextWeek": "dddd",
-            "sameElse": "MMMM D"
+            "sameElse": "[on] MMMM D"
         },
         "time": "h m A",
         "datetime": {

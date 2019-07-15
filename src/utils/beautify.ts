@@ -19,7 +19,7 @@ export const beautify = {
             sameDay: dateFormats.moment.date.sameDay,
             nextDay: dateFormats.moment.date.nextDay,
             nextWeek: dateFormats.moment.date.nextWeek,
-            sameElse: dateFormats.moment.date.sameElse,
+            sameElse: dateFormats.moment.date.sameElse
         }).replace(' 0', '')
     },
 
@@ -48,7 +48,7 @@ export const beautify = {
             return dateFormats.moment.daterange.nextWeek
         }
 
-        return i18n.translate('moment.daterange.fromTo', {
+        return i18n.translate('daterange.fromTo', {
             date_1: beautify.date(dateRange.min),
             date_2: beautify.date(new Date(dateRange.max.getTime() - 1000))
         })
